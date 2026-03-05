@@ -1,0 +1,206 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Users table - OTP authentication (no passwords)
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  grade        Int
+  isUnder18    Boolean  @default(true) @map("is_under_18")
+  authProvider String   @default("otp") @map("auth_provider")
+  googleId     String?  @unique @map("google_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  lastLogin    DateTime? @map("last_login")
+  isAdmin      Boolean  @default(false) @map("is_admin")
+  
+  progress     Progress[]
+  quizAttempts QuizAttempt[] @relation("UserQuizAttempts")
+  
+  @@index([email])
+  @@index([googleId])
+  @@map("users")
+}
+
+// Sessions table
+model Session {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@index([token])
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+// Curriculum nodes with materialized paths
+model CurriculumNode {
+  id        String   @id @default(uuid())
+  name      String
+  path      String   @unique
+  level     Int
+  parentId  String?  @map("parent_id")
+  nodeType  String   @map("node_type")
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  parent   CurriculumNode?  @relation("NodeHierarchy", fields: [parentId], references: [id])
+  children CurriculumNode[] @relation("NodeHierarchy")
+  lessons  Lesson[]
+  quizzes  Quiz[]
+  
+  @@index([path])
+  @@index([parentId])
+  @@index([level])
+  @@map("curriculum_nodes")
+}
+
+// Prompt templates with versioning
+model PromptTemplate {
+  id           String   @id @default(uuid())
+  name         String
+  templateType String   @map("template_type")
+  version      Int
+  content      String   @db.Text
+  subjectId    String?  @map("subject_id")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  
+  lessons Lesson[]
+  quizzes Quiz[]
+  
+  @@unique([name, version])
+  @@index([templateType, version])
+  @@index([subjectId])
+  @@map("prompt_templates")
+}
+
+// Lessons table
+model Lesson {
+  id                String   @id @default(uuid())
+  subtopicId        String   @map("subtopic_id")
+  contentHash       String   @unique @map("content_hash")
+  explanation       String   @db.Text
+  examples          Json
+  keyPoints         Json     @map("key_points")
+  practiceQuestions Json     @map("practice_questions")
+  promptVersion     Int      @map("prompt_version")
+  aiProvider        String   @map("ai_provider")
+  createdAt         DateTime @default(now()) @map("created_at")
+  
+  subtopic         CurriculumNode @relation(fields: [subtopicId], references: [id])
+  promptTemplateId String?        @map("prompt_template_id")
+  promptTemplate   PromptTemplate? @relation(fields: [promptTemplateId], references: [id])
+  progress         Progress[]
+  audioSegments    AudioSegment[]
+  
+  @@index([subtopicId])
+  @@index([contentHash])
+  @@map("lessons")
+}
+
+// Quizzes table
+model Quiz {
+  id            String   @id @default(uuid())
+  topicId       String   @map("topic_id")
+  contentHash   String   @unique @map("content_hash")
+  questions     Json
+  promptVersion Int      @map("prompt_version")
+  aiProvider    String   @map("ai_provider")
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  topic            CurriculumNode  @relation(fields: [topicId], references: [id])
+  promptTemplateId String?         @map("prompt_template_id")
+  promptTemplate   PromptTemplate? @relation(fields: [promptTemplateId], references: [id])
+  attempts         QuizAttempt[]
+  
+  @@index([topicId])
+  @@index([contentHash])
+  @@map("quizzes")
+}
+
+// Audio segments table
+model AudioSegment {
+  id         String   @id @default(uuid())
+  textHash   String   @unique @map("text_hash")
+  text       String   @db.Text
+  audioUrl   String   @map("audio_url")
+  duration   Int
+  provider   String
+  storageKey String   @map("storage_key")
+  usageCount Int      @default(0) @map("usage_count")
+  createdAt  DateTime @default(now()) @map("created_at")
+  lastUsedAt DateTime? @map("last_used_at")
+  
+  lessonId String? @map("lesson_id")
+  lesson   Lesson? @relation(fields: [lessonId], references: [id])
+  
+  @@index([textHash])
+  @@index([usageCount])
+  @@map("audio_segments")
+}
+
+// Progress table
+model Progress {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  lessonId    String   @map("lesson_id")
+  completedAt DateTime @default(now()) @map("completed_at")
+  
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+  
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([completedAt])
+  @@map("progress")
+}
+
+// Quiz attempts table
+model QuizAttempt {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  quizId      String   @map("quiz_id")
+  answers     Json
+  score       Decimal  @db.Decimal(5, 2)
+  timeSpent   Int      @map("time_spent")
+  completedAt DateTime @default(now()) @map("completed_at")
+  
+  user User @relation("UserQuizAttempts", fields: [userId], references: [id], onDelete: Cascade)
+  quiz Quiz @relation(fields: [quizId], references: [id])
+  
+  @@index([userId])
+  @@index([quizId])
+  @@index([completedAt])
+  @@map("quiz_attempts")
+}
+
+// API usage logs table
+model ApiUsageLog {
+  id            String   @id @default(uuid())
+  userId        String?  @map("user_id")
+  operation     String
+  provider      String
+  tokensUsed    Int?     @map("tokens_used")
+  responseTime  Int?     @map("response_time")
+  success       Boolean
+  errorMessage  String?  @map("error_message") @db.Text
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@index([operation])
+  @@map("api_usage_logs")
+}

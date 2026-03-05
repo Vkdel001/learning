@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ai-tutor-postgres
+    environment:
+      POSTGRES_USER: ai_tutor_user
+      POSTGRES_PASSWORD: ai_tutor_password
+      POSTGRES_DB: ai_tutor_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_tutor_user -d ai_tutor_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ai-tutor-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
