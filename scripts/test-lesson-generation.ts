@@ -2,6 +2,10 @@ import { generateLesson } from '../lib/services/lesson-generator.service';
 import { getGrades, getChildren } from '../lib/services/curriculum.service';
 import { prisma } from '../lib/prisma';
 import { redis } from '../lib/redis';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 /**
  * Test script for lesson generation
