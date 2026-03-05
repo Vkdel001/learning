@@ -116,6 +116,7 @@ model Quiz {
   id            String   @id @default(uuid())
   topicId       String   @map("topic_id")
   contentHash   String   @unique @map("content_hash")
+  difficulty    String   @default("medium") // easy, medium, hard
   questions     Json
   promptVersion Int      @map("prompt_version")
   aiProvider    String   @map("ai_provider")
@@ -128,6 +129,7 @@ model Quiz {
   
   @@index([topicId])
   @@index([contentHash])
+  @@index([topicId, difficulty])
   @@map("quizzes")
 }
 
