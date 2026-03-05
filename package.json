@@ -10,7 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:redis": "tsx scripts/test-redis.ts",
-    "test:db": "tsx scripts/test-db.ts"
+    "test:db": "tsx scripts/test-db.ts",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@getbrevo/brevo": "^4.0.1",
