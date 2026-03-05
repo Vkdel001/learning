@@ -187,17 +187,48 @@
 
 ---
 
+### Task 3.3, 3.5, 3.7, 3.9, 3.11, 3.12: Property tests for authentication ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Created comprehensive property-based tests for auth system
+- ✅ Property 1: User registration creates account (10 runs)
+- ✅ Property 1b: Duplicate email rejection (10 runs)
+- ✅ Property 1c: isUnder18 auto-detection (10 runs)
+- ✅ Property 5: OTP rate limiting - blocks 4th request (5 runs)
+- ✅ Property 3: OTP expiration - rejects expired OTP (2 runs)
+- ✅ Property 3b: OTP validity before expiration (10 runs)
+- ✅ Property 6: Session expiration - rejects expired session (2 runs)
+- ✅ Property 6b: Session validity before expiration (10 runs)
+- ✅ Property 7: Logout invalidates session (10 runs)
+- ✅ Property 4: Minimal data collection for minors (10 runs)
+- ✅ Fixed email service to skip Brevo in test environment
+- ✅ All 10 test suites passing
+
+**Test coverage:**
+- User registration validation
+- Duplicate email handling
+- OTP generation and rate limiting
+- OTP expiration logic
+- Session creation and validation
+- Session expiration logic
+- Logout functionality
+- Privacy compliance (minimal data collection)
+
+---
+
 ## 🔄 In Progress
 
-### Task 3.3: Write property test for user registration
+### Task 4.1: Create curriculum service
 **Status:** Next  
 **Not started yet**
 
 **Next steps:**
-1. Create property test for user registration
-2. Test duplicate email handling
-3. Test grade validation
-4. Test isUnder18 auto-detection
+1. Create curriculum service for tree navigation
+2. Implement getChildren function
+3. Implement getAncestors function
+4. Create API routes for curriculum
 
 ---
 
@@ -318,7 +349,7 @@
 
 **Last Updated:** March 5, 2026  
 **Current Phase:** Phase 1 - MVP  
-**Progress:** 11/143 tasks complete (7.7%)
+**Progress:** 17/143 tasks complete (11.9%)
 
 ---
 

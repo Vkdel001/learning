@@ -5,12 +5,16 @@ import * as brevo from '@getbrevo/brevo';
  * Handles sending OTP emails to users
  */
 
-// Initialize Brevo API client
-const apiInstance = new brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(
-  brevo.TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY || ''
-);
+// Initialize Brevo API client (skip in test environment)
+let apiInstance: brevo.TransactionalEmailsApi | null = null;
+
+if (process.env.NODE_ENV !== 'test') {
+  apiInstance = new brevo.TransactionalEmailsApi();
+  apiInstance.setApiKey(
+    brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY || ''
+  );
+}
 
 export interface SendOTPEmailParams {
   to: string;
@@ -26,6 +30,16 @@ export async function sendOTPEmail({
   name,
   otp,
 }: SendOTPEmailParams): Promise<void> {
+  // Skip sending in test environment
+  if (process.env.NODE_ENV === 'test') {
+    console.log(`[TEST] Would send OTP ${otp} to ${to}`);
+    return;
+  }
+
+  if (!apiInstance) {
+    throw new Error('Email service not initialized');
+  }
+
   const sendSmtpEmail = new brevo.SendSmtpEmail();
 
   sendSmtpEmail.subject = 'Your AI Tutor Login Code';

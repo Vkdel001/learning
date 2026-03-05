@@ -34,6 +34,12 @@ const customJestConfig = {
       statements: 80,
     },
   },
+  // Set NODE_ENV to test
+  testEnvironmentOptions: {
+    env: {
+      NODE_ENV: 'test',
+    },
+  },
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
