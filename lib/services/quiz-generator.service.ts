@@ -16,6 +16,7 @@ export interface QuizQuestion {
 }
 
 export interface QuizContent {
+  quizId?: string; // Database ID
   topicId: string;
   topicName: string;
   breadcrumbs: string[];
@@ -194,8 +195,21 @@ export async function generateQuiz(
   // Parse response
   const quizData = parseAIResponse(aiResponse.content);
 
-  // Create quiz object
+  // Save to database first to get the ID
+  const dbQuiz = await prisma.quiz.create({
+    data: {
+      topicId,
+      contentHash: promptHash,
+      difficulty,
+      questions: quizData.questions as any,
+      promptVersion: 1,
+      aiProvider: aiProvider.getName(),
+    },
+  });
+
+  // Create quiz object with database ID
   const quiz: QuizContent = {
+    quizId: dbQuiz.id,
     topicId,
     topicName: topic.name,
     breadcrumbs: breadcrumbNames,
@@ -204,18 +218,6 @@ export async function generateQuiz(
     contentHash: promptHash,
     generatedAt: new Date(),
   };
-
-  // Save to database
-  await prisma.quiz.create({
-    data: {
-      topicId,
-      contentHash: promptHash,
-      difficulty,
-      questions: quiz.questions as any,
-      promptVersion: 1,
-      aiProvider: aiProvider.getName(),
-    },
-  });
 
   // Cache for 7 days
   await set(cacheKey, quiz, 7 * 24 * 60 * 60);
@@ -262,6 +264,7 @@ export async function getQuiz(topicId: string, difficulty: string = 'medium'): P
   const breadcrumbNames = breadcrumbs.map((node) => node.name);
 
   return {
+    quizId: dbQuiz.id,
     topicId: dbQuiz.topicId,
     topicName: topic.name,
     breadcrumbs: breadcrumbNames,

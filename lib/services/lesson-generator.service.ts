@@ -9,6 +9,7 @@ import { getNodeById, getBreadcrumbs } from './curriculum.service';
  */
 
 export interface LessonContent {
+  lessonId?: string; // Database ID
   subtopicId: string;
   subtopicName: string;
   breadcrumbs: string[];
@@ -43,20 +44,23 @@ async function buildContext(subtopicId: string): Promise<string> {
 function createLessonPrompt(subtopicName: string, context: string): string {
   return `Create a lesson for: ${subtopicName}
 
-CRITICAL: Return ONLY valid JSON. No markdown, no code blocks, no extra text.
+CRITICAL JSON RULES - FOLLOW EXACTLY:
+1. Return ONLY valid JSON - no markdown, no code blocks, no extra text
+2. NO apostrophes or quotes inside any text - rewrite to avoid them
+3. NO special characters: no parentheses, no brackets, no backslashes
+4. Keep all text SHORT and SIMPLE
+5. Use only basic punctuation: periods, commas, question marks
+6. NO colons except in JSON syntax
 
 Required format:
-{"explanation":"2-3 sentences","examples":["example 1","example 2","example 3"],"keyPoints":["point 1","point 2","point 3","point 4","point 5"],"practiceQuestions":[{"question":"Q1?","answer":"A1"},{"question":"Q2?","answer":"A2"},{"question":"Q3?","answer":"A3"}]}
+{"explanation":"Short text here","examples":["Example one","Example two"],"keyPoints":["Point one","Point two","Point three"],"practiceQuestions":[{"question":"What is X","answer":"Short answer"}]}
 
-IMPORTANT RULES:
-- Keep explanation under 150 words
-- Each example: 1-2 sentences max
-- Each key point: 1 sentence max
-- Each answer: 1-2 sentences max
-- DO NOT use quotes (") inside strings - use single quotes (') instead
-- DO NOT use backslashes
-- Keep all text simple and avoid special characters
-- Ensure valid JSON syntax`;
+Requirements:
+- Explanation: 2-3 simple sentences, under 100 words
+- Examples: 2-3 examples, each under 50 words
+- Key Points: 3-5 points, each under 30 words
+- Practice Questions: 2-3 questions with short answers
+- Use simple words only, no technical jargon unless necessary`;
 }
 
 /**
@@ -187,7 +191,7 @@ export async function generateLesson(subtopicId: string): Promise<LessonContent>
   
   const startTime = Date.now();
   const aiResponse = await aiProvider.generateContent(prompt, {
-    temperature: 0.7,
+    temperature: 0.3, // Lower temperature for more consistent JSON output
     maxTokens: 2048,
   });
   const elapsed = Date.now() - startTime;
@@ -196,8 +200,23 @@ export async function generateLesson(subtopicId: string): Promise<LessonContent>
   // Parse response
   const lessonData = parseAIResponse(aiResponse.content);
 
-  // Create lesson object
+  // Save to database first to get the ID
+  const dbLesson = await prisma.lesson.create({
+    data: {
+      subtopicId,
+      contentHash: promptHash,
+      explanation: lessonData.explanation,
+      examples: lessonData.examples,
+      keyPoints: lessonData.keyPoints,
+      practiceQuestions: lessonData.practiceQuestions,
+      promptVersion: 1,
+      aiProvider: aiProvider.getName(),
+    },
+  });
+
+  // Create lesson object with database ID
   const lesson: LessonContent = {
+    lessonId: dbLesson.id,
     subtopicId,
     subtopicName: subtopic.name,
     breadcrumbs: breadcrumbNames,
@@ -205,20 +224,6 @@ export async function generateLesson(subtopicId: string): Promise<LessonContent>
     contentHash: promptHash,
     generatedAt: new Date(),
   };
-
-  // Save to database
-  await prisma.lesson.create({
-    data: {
-      subtopicId,
-      contentHash: promptHash,
-      explanation: lesson.explanation,
-      examples: lesson.examples,
-      keyPoints: lesson.keyPoints,
-      practiceQuestions: lesson.practiceQuestions,
-      promptVersion: 1,
-      aiProvider: aiProvider.getName(),
-    },
-  });
 
   // Cache for 7 days
   await set(cacheKey, lesson, 7 * 24 * 60 * 60);

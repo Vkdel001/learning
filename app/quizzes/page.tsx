@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { authenticatedFetch } from '@/lib/utils/api-client';
 
 interface CurriculumNode {
   id: string;
@@ -18,6 +19,8 @@ interface QuizQuestion {
 }
 
 interface Quiz {
+  quizId?: string;
+  topicId: string;
   topicName: string;
   breadcrumbs: string[];
   difficulty: string;
@@ -38,6 +41,7 @@ export default function QuizzesPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [quizStartTime, setQuizStartTime] = useState<number>(0);
 
   useEffect(() => {
     loadGrades();
@@ -127,6 +131,7 @@ export default function QuizzesPage() {
       if (data.success) {
         setQuiz(data.data);
         setSelectedAnswers(new Array(data.data.questions.length).fill(-1));
+        setQuizStartTime(Date.now());
       } else {
         setError(data.error || 'Failed to generate quiz');
       }
@@ -163,7 +168,46 @@ export default function QuizzesPage() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!quiz || !quiz.quizId) return;
+
+    // Calculate time spent
+    const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
+
+    // Record the attempt
+    try {
+      const correctAnswers = quiz.questions.map((q) => q.correctAnswer);
+      
+      console.log('Recording quiz attempt:', {
+        quizId: quiz.quizId,
+        answers: selectedAnswers,
+        correctAnswers,
+        timeSpent,
+      });
+      
+      const response = await authenticatedFetch('/api/progress/quizzes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          quizId: quiz.quizId,
+          answers: selectedAnswers,
+          correctAnswers,
+          timeSpent,
+        }),
+      });
+
+      const data = await response.json();
+      console.log('Quiz attempt response:', data);
+      
+      if (data.success) {
+        console.log('✅ Quiz attempt recorded successfully');
+      } else {
+        console.error('❌ Failed to record quiz attempt:', data.error);
+      }
+    } catch (err) {
+      console.error('❌ Exception recording quiz attempt:', err);
+    }
+
     setShowResults(true);
     setCurrentQuestion(0);
   };
@@ -207,6 +251,9 @@ export default function QuizzesPage() {
               </Link>
               <Link href="/quizzes" className="text-gray-700 hover:text-indigo-600 font-medium">
                 Quizzes
+              </Link>
+              <Link href="/progress" className="text-gray-700 hover:text-indigo-600">
+                Progress
               </Link>
             </nav>
           </div>

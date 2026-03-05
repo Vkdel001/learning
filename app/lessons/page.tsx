@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { authenticatedFetch } from '@/lib/utils/api-client';
+import AudioPlayer from '@/components/AudioPlayer';
 
 interface CurriculumNode {
   id: string;
@@ -11,6 +13,7 @@ interface CurriculumNode {
 }
 
 interface Lesson {
+  lessonId?: string;
   subtopicName: string;
   breadcrumbs: string[];
   explanation: string;
@@ -30,6 +33,7 @@ export default function LessonsPage() {
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [markingComplete, setMarkingComplete] = useState(false);
 
   useEffect(() => {
     loadGrades();
@@ -123,6 +127,36 @@ export default function LessonsPage() {
     }
   };
 
+  const markLessonComplete = async () => {
+    if (!lesson || !lesson.lessonId) {
+      alert('Cannot mark lesson complete: Lesson ID missing');
+      return;
+    }
+
+    setMarkingComplete(true);
+    try {
+      const response = await authenticatedFetch('/api/progress/lessons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lessonId: lesson.lessonId,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Lesson marked as complete! 🎉');
+      } else {
+        alert('Failed to mark lesson complete: ' + data.error);
+      }
+    } catch (err) {
+      console.error('Failed to mark lesson complete:', err);
+      alert('Failed to mark lesson complete');
+    } finally {
+      setMarkingComplete(false);
+    }
+  };
+
   const getNodeTypeLabel = (nodeType: string) => {
     const labels: Record<string, string> = {
       grade: 'Subjects',
@@ -145,6 +179,12 @@ export default function LessonsPage() {
             <nav className="flex gap-4">
               <Link href="/lessons" className="text-gray-700 hover:text-indigo-600 font-medium">
                 Lessons
+              </Link>
+              <Link href="/quizzes" className="text-gray-700 hover:text-indigo-600">
+                Quizzes
+              </Link>
+              <Link href="/progress" className="text-gray-700 hover:text-indigo-600">
+                Progress
               </Link>
               <Link href="/test" className="text-gray-500 hover:text-gray-700">
                 Test
@@ -297,12 +337,32 @@ export default function LessonsPage() {
                     </p>
                   </div>
 
+                  {/* Listen to Full Lesson */}
+                  <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-1">
+                          🎧 Audio Narration
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          Listen to the explanation being read aloud
+                        </p>
+                      </div>
+                      <AudioPlayer 
+                        text={`${lesson.subtopicName}. ${lesson.explanation}`}
+                      />
+                    </div>
+                  </div>
+
                   {/* Explanation */}
                   <section>
-                    <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
-                      <span className="text-2xl mr-2">📖</span>
-                      Explanation
-                    </h2>
+                    <div className="flex items-center justify-between mb-3">
+                      <h2 className="text-xl font-bold text-gray-900 flex items-center">
+                        <span className="text-2xl mr-2">📖</span>
+                        Explanation
+                      </h2>
+                      <AudioPlayer text={lesson.explanation} />
+                    </div>
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                       {lesson.explanation}
                     </p>
@@ -373,6 +433,17 @@ export default function LessonsPage() {
                       ))}
                     </div>
                   </section>
+
+                  {/* Mark Complete Button */}
+                  <div className="pt-6 border-t border-gray-200">
+                    <button
+                      onClick={markLessonComplete}
+                      disabled={markingComplete}
+                      className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold transition-colors"
+                    >
+                      {markingComplete ? 'Marking Complete...' : '✓ Mark as Complete'}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

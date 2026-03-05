@@ -20,16 +20,16 @@ export default function Home() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/lessons"
+              href="/auth/register"
               className="px-8 py-4 bg-indigo-600 text-white text-lg font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-lg"
             >
-              Start Learning →
+              Get Started Free →
             </Link>
             <Link
-              href="/test"
+              href="/auth/login"
               className="px-8 py-4 bg-white text-indigo-600 text-lg font-semibold rounded-lg hover:bg-gray-50 transition-colors border-2 border-indigo-600"
             >
-              Test Interface
+              Sign In
             </Link>
           </div>
         </div>

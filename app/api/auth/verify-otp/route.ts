@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     // Validation
     if (!email || !otp) {
       return NextResponse.json(
-        { error: 'Email and OTP are required' },
+        { success: false, error: 'Email and OTP are required' },
         { status: 400 }
       );
     }
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     if (!result.success) {
       return NextResponse.json(
-        { error: result.message },
+        { success: false, error: result.message },
         { status: 400 }
       );
     }
@@ -27,7 +27,11 @@ export async function POST(request: NextRequest) {
     // Set session cookie
     const response = NextResponse.json({
       success: true,
-      session: result.session,
+      data: {
+        token: result.session!.token,
+        userId: result.session!.userId,
+        expiresAt: result.session!.expiresAt,
+      },
       message: result.message,
     });
 
@@ -40,10 +44,10 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Verify OTP error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: error.message || 'Internal server error' },
       { status: 500 }
     );
   }

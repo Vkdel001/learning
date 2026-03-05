@@ -14,6 +14,7 @@ export interface UserRegistrationData {
   name: string;
   email: string;
   grade: number;
+  isUnder18?: boolean;
 }
 
 export interface SessionData {
@@ -57,8 +58,8 @@ export async function registerUser(
       };
     }
 
-    // Determine if user is under 18 based on grade
-    const isUnder18 = data.grade <= 13;
+    // Determine if user is under 18 (use provided value or default based on grade)
+    const isUnder18 = data.isUnder18 !== undefined ? data.isUnder18 : data.grade <= 13;
 
     // Create user
     const user = await prisma.user.create({
