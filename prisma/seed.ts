@@ -23,47 +23,66 @@ const curriculum: CurriculumStructure[] = [
         nodeType: 'subject',
         children: [
           {
-            name: 'Introduction to Computing',
+            name: 'Data Representation',
             nodeType: 'section',
             children: [
               {
-                name: 'What is a Computer?',
+                name: 'Number Systems',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Hardware Components', nodeType: 'subtopic' },
-                  { name: 'Software Types', nodeType: 'subtopic' },
-                  { name: 'Input and Output Devices', nodeType: 'subtopic' },
+                  { name: 'Decimal and Binary', nodeType: 'subtopic' },
+                  { name: 'Hexadecimal System', nodeType: 'subtopic' },
+                  { name: 'Number Conversions', nodeType: 'subtopic' },
                 ],
               },
               {
-                name: 'Computer Systems',
+                name: 'Text, Sound and Images',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Operating Systems Basics', nodeType: 'subtopic' },
-                  { name: 'File Management', nodeType: 'subtopic' },
+                  { name: 'Character Encoding (ASCII, Unicode)', nodeType: 'subtopic' },
+                  { name: 'Image Representation', nodeType: 'subtopic' },
+                  { name: 'Sound Sampling', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Data Storage and File Compression',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Storage Units (Bits, Bytes, KB, MB, GB)', nodeType: 'subtopic' },
+                  { name: 'Lossy vs Lossless Compression', nodeType: 'subtopic' },
                 ],
               },
             ],
           },
           {
-            name: 'Digital Literacy',
+            name: 'Data Transmission',
             nodeType: 'section',
             children: [
               {
-                name: 'Using Applications',
+                name: 'Types and Methods of Data Transmission',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Word Processing', nodeType: 'subtopic' },
-                  { name: 'Spreadsheets Basics', nodeType: 'subtopic' },
-                  { name: 'Presentations', nodeType: 'subtopic' },
+                  { name: 'Serial vs Parallel Transmission', nodeType: 'subtopic' },
+                  { name: 'Simplex, Half-Duplex, Full-Duplex', nodeType: 'subtopic' },
+                  { name: 'Synchronous vs Asynchronous', nodeType: 'subtopic' },
                 ],
               },
               {
-                name: 'Internet Safety',
+                name: 'Methods of Error Detection',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Online Safety', nodeType: 'subtopic' },
-                  { name: 'Digital Citizenship', nodeType: 'subtopic' },
+                  { name: 'Parity Checks', nodeType: 'subtopic' },
+                  { name: 'Checksums', nodeType: 'subtopic' },
+                  { name: 'Echo Checks', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Encryption',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Symmetric Encryption', nodeType: 'subtopic' },
+                  { name: 'Asymmetric Encryption', nodeType: 'subtopic' },
+                  { name: 'Public and Private Keys', nodeType: 'subtopic' },
                 ],
               },
             ],
@@ -81,39 +100,68 @@ const curriculum: CurriculumStructure[] = [
         nodeType: 'subject',
         children: [
           {
-            name: 'Programming Fundamentals',
+            name: 'Hardware',
             nodeType: 'section',
             children: [
               {
-                name: 'Introduction to Programming',
+                name: 'Computer Architecture',
                 nodeType: 'topic',
                 children: [
-                  { name: 'What is Programming?', nodeType: 'subtopic' },
-                  { name: 'Algorithms and Flowcharts', nodeType: 'subtopic' },
-                  { name: 'Pseudocode', nodeType: 'subtopic' },
+                  { name: 'Von Neumann Architecture', nodeType: 'subtopic' },
+                  { name: 'CPU Components (ALU, CU, Registers)', nodeType: 'subtopic' },
+                  { name: 'Fetch-Decode-Execute Cycle', nodeType: 'subtopic' },
                 ],
               },
               {
-                name: 'Basic Python',
+                name: 'Input and Output Devices',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Variables and Data Types', nodeType: 'subtopic' },
-                  { name: 'Input and Output', nodeType: 'subtopic' },
-                  { name: 'Basic Operators', nodeType: 'subtopic' },
+                  { name: 'Input Devices (Keyboard, Mouse, Scanner)', nodeType: 'subtopic' },
+                  { name: 'Output Devices (Monitor, Printer, Speaker)', nodeType: 'subtopic' },
+                  { name: 'Sensors and Actuators', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Data Storage',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Primary Storage (RAM, ROM)', nodeType: 'subtopic' },
+                  { name: 'Secondary Storage (HDD, SSD, USB)', nodeType: 'subtopic' },
+                  { name: 'Cloud Storage', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Network Hardware',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Network Interface Cards (NIC)', nodeType: 'subtopic' },
+                  { name: 'Routers and Switches', nodeType: 'subtopic' },
+                  { name: 'Modems and Access Points', nodeType: 'subtopic' },
                 ],
               },
             ],
           },
           {
-            name: 'Data and Information',
+            name: 'Software',
             nodeType: 'section',
             children: [
               {
-                name: 'Data Representation',
+                name: 'Types of Software and Interrupts',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Binary Numbers', nodeType: 'subtopic' },
-                  { name: 'Text Encoding', nodeType: 'subtopic' },
+                  { name: 'System Software vs Application Software', nodeType: 'subtopic' },
+                  { name: 'Operating Systems', nodeType: 'subtopic' },
+                  { name: 'Utility Software', nodeType: 'subtopic' },
+                  { name: 'Hardware and Software Interrupts', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Programming Languages and IDEs',
+                nodeType: 'topic',
+                children: [
+                  { name: 'High-Level vs Low-Level Languages', nodeType: 'subtopic' },
+                  { name: 'Compilers and Interpreters', nodeType: 'subtopic' },
+                  { name: 'Integrated Development Environments', nodeType: 'subtopic' },
                 ],
               },
             ],
@@ -131,16 +179,61 @@ const curriculum: CurriculumStructure[] = [
         nodeType: 'subject',
         children: [
           {
-            name: 'Control Structures',
+            name: 'The Internet and Its Uses',
             nodeType: 'section',
             children: [
               {
-                name: 'Selection',
+                name: 'The Internet and World Wide Web',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Internet vs WWW', nodeType: 'subtopic' },
+                  { name: 'IP Addresses and DNS', nodeType: 'subtopic' },
+                  { name: 'URLs and HTTP/HTTPS', nodeType: 'subtopic' },
+                  { name: 'Web Browsers and Search Engines', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Digital Currency',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Cryptocurrency Basics', nodeType: 'subtopic' },
+                  { name: 'Blockchain Technology', nodeType: 'subtopic' },
+                  { name: 'Digital Wallets', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Cyber Security',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Malware Types (Virus, Trojan, Worm)', nodeType: 'subtopic' },
+                  { name: 'Phishing and Social Engineering', nodeType: 'subtopic' },
+                  { name: 'Firewalls and Antivirus', nodeType: 'subtopic' },
+                  { name: 'Strong Passwords and 2FA', nodeType: 'subtopic' },
+                ],
+              },
+            ],
+          },
+          {
+            name: 'Programming Fundamentals',
+            nodeType: 'section',
+            children: [
+              {
+                name: 'Variables and Data Types',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Integer, Float, String, Boolean', nodeType: 'subtopic' },
+                  { name: 'Type Conversion', nodeType: 'subtopic' },
+                  { name: 'Constants', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Selection Statements',
                 nodeType: 'topic',
                 children: [
                   { name: 'If Statements', nodeType: 'subtopic' },
                   { name: 'If-Else Statements', nodeType: 'subtopic' },
-                  { name: 'Nested Conditions', nodeType: 'subtopic' },
+                  { name: 'Elif and Nested Conditions', nodeType: 'subtopic' },
+                  { name: 'Logical Operators (AND, OR, NOT)', nodeType: 'subtopic' },
                 ],
               },
               {
@@ -149,22 +242,8 @@ const curriculum: CurriculumStructure[] = [
                 children: [
                   { name: 'For Loops', nodeType: 'subtopic' },
                   { name: 'While Loops', nodeType: 'subtopic' },
-                  { name: 'Loop Control', nodeType: 'subtopic' },
-                ],
-              },
-            ],
-          },
-          {
-            name: 'Data Structures',
-            nodeType: 'section',
-            children: [
-              {
-                name: 'Lists and Arrays',
-                nodeType: 'topic',
-                children: [
-                  { name: 'Creating Lists', nodeType: 'subtopic' },
-                  { name: 'List Operations', nodeType: 'subtopic' },
-                  { name: 'List Iteration', nodeType: 'subtopic' },
+                  { name: 'Break and Continue', nodeType: 'subtopic' },
+                  { name: 'Nested Loops', nodeType: 'subtopic' },
                 ],
               },
             ],
@@ -182,39 +261,68 @@ const curriculum: CurriculumStructure[] = [
         nodeType: 'subject',
         children: [
           {
-            name: 'Functions and Procedures',
+            name: 'Automated and Emerging Technologies',
             nodeType: 'section',
             children: [
               {
-                name: 'Functions',
+                name: 'Automated Systems',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Defining Functions', nodeType: 'subtopic' },
-                  { name: 'Parameters and Arguments', nodeType: 'subtopic' },
-                  { name: 'Return Values', nodeType: 'subtopic' },
+                  { name: 'Sensors and Control Systems', nodeType: 'subtopic' },
+                  { name: 'Feedback Loops', nodeType: 'subtopic' },
+                  { name: 'Applications (Smart Homes, Manufacturing)', nodeType: 'subtopic' },
                 ],
               },
               {
-                name: 'Scope and Lifetime',
+                name: 'Robotics',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Local Variables', nodeType: 'subtopic' },
-                  { name: 'Global Variables', nodeType: 'subtopic' },
+                  { name: 'Robot Components', nodeType: 'subtopic' },
+                  { name: 'Robot Programming', nodeType: 'subtopic' },
+                  { name: 'Applications in Industry', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Artificial Intelligence',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Machine Learning Basics', nodeType: 'subtopic' },
+                  { name: 'Neural Networks', nodeType: 'subtopic' },
+                  { name: 'AI Applications and Ethics', nodeType: 'subtopic' },
                 ],
               },
             ],
           },
           {
-            name: 'File Handling',
+            name: 'Advanced Programming',
             nodeType: 'section',
             children: [
               {
-                name: 'Working with Files',
+                name: 'Functions and Procedures',
                 nodeType: 'topic',
                 children: [
-                  { name: 'Reading Files', nodeType: 'subtopic' },
-                  { name: 'Writing Files', nodeType: 'subtopic' },
-                  { name: 'File Modes', nodeType: 'subtopic' },
+                  { name: 'Defining Functions', nodeType: 'subtopic' },
+                  { name: 'Parameters and Arguments', nodeType: 'subtopic' },
+                  { name: 'Return Values', nodeType: 'subtopic' },
+                  { name: 'Scope and Lifetime', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'Arrays and Lists',
+                nodeType: 'topic',
+                children: [
+                  { name: '1D and 2D Arrays', nodeType: 'subtopic' },
+                  { name: 'List Methods', nodeType: 'subtopic' },
+                  { name: 'Searching and Sorting', nodeType: 'subtopic' },
+                ],
+              },
+              {
+                name: 'File Handling',
+                nodeType: 'topic',
+                children: [
+                  { name: 'Reading from Files', nodeType: 'subtopic' },
+                  { name: 'Writing to Files', nodeType: 'subtopic' },
+                  { name: 'CSV and Text Files', nodeType: 'subtopic' },
                 ],
               },
             ],
