@@ -57,17 +57,40 @@
 
 ---
 
+### Task 1.4: Set up property-based testing ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Installed Jest, @types/jest, ts-jest
+- ✅ Installed fast-check for property-based testing
+- ✅ Installed @testing-library/react and @testing-library/jest-dom
+- ✅ Configured Jest with Next.js integration
+- ✅ Set coverage thresholds (80% line, 75% branch)
+- ✅ Created comprehensive test data generators
+- ✅ Created example property tests
+- ✅ Fixed hex string generation issues
+- ✅ All tests passing (13 tests: 6 Redis + 7 property tests)
+
+**Test generators created:**
+- User registration, OTP, UUID, session tokens
+- Curriculum nodes with materialized paths
+- Lessons, quizzes, audio segments
+- Content hashes (64-char hex strings)
+
+---
+
 ## 🔄 In Progress
 
-### Task 1.4: Set up property-based testing
+### Task 1.5: Environment Configuration
 **Status:** Next  
 **Not started yet**
 
 **Next steps:**
-1. Install fast-check and Jest
-2. Configure Jest for TypeScript
-3. Create test utilities and generators
-4. Set up test database
+1. Populate API keys in .env file
+2. Add Brevo API key for OTP emails
+3. Add Google Gemini API key for AI content
+4. Add ElevenLabs API key for TTS
 
 ---
 
@@ -188,7 +211,7 @@
 
 **Last Updated:** March 5, 2026  
 **Current Phase:** Phase 1 - MVP  
-**Progress:** 3/143 tasks complete (2.1%)
+**Progress:** 4/143 tasks complete (2.8%)
 
 ---
 
