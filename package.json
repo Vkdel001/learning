@@ -11,6 +11,7 @@
     "test:watch": "jest --watch",
     "test:redis": "tsx scripts/test-redis.ts",
     "test:db": "tsx scripts/test-db.ts",
+    "test:lesson": "tsx scripts/test-lesson-generation.ts",
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
