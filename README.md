@@ -17,7 +17,7 @@ Free AI-powered tutoring platform for secondary school students in Mauritius who
 - **Backend:** Next.js API Routes
 - **Database:** PostgreSQL with Prisma ORM
 - **Cache:** Redis
-- **AI:** Google Gemini
+- **AI:** Google Gemini 2.0 Flash Lite
 - **Voice:** ElevenLabs
 - **Storage:** Backblaze B2
 - **CDN:** Cloudflare

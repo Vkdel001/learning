@@ -35,9 +35,12 @@ export class GeminiProvider implements IAIProvider {
   private client: GoogleGenerativeAI;
   private model: string;
 
-  constructor(apiKey: string, model: string = 'gemini-2.5-flash') {
+  constructor(apiKey: string, model?: string) {
     this.client = new GoogleGenerativeAI(apiKey);
-    this.model = model;
+    // Allow model override via env var or parameter
+    // Default to gemini-2.5-flash (fast and reliable)
+    this.model = model || process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    console.log(`🤖 Using Gemini model: ${this.model}`);
   }
 
   async generateContent(
@@ -55,9 +58,23 @@ export class GeminiProvider implements IAIProvider {
         },
       });
 
-      const result = await model.generateContent(prompt);
+      console.log(`🤖 Calling Gemini API (${this.model})...`);
+      console.log(`📝 Prompt length: ${prompt.length} characters`);
+      
+      // Add timeout wrapper (60 seconds for longer prompts)
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('API call timed out after 60 seconds')), 60000);
+      });
+
+      const result = await Promise.race([
+        model.generateContent(prompt),
+        timeoutPromise
+      ]);
+      
       const response = result.response;
       const text = response.text();
+
+      console.log(`✅ Received response (${text.length} chars, ${response.usageMetadata?.totalTokenCount || 0} tokens)`);
 
       return {
         content: text,
@@ -65,9 +82,20 @@ export class GeminiProvider implements IAIProvider {
         model: this.model,
         tokensUsed: response.usageMetadata?.totalTokenCount,
       };
-    } catch (error) {
-      console.error('Gemini generation error:', error);
-      throw new Error('Failed to generate content with Gemini');
+    } catch (error: any) {
+      console.error('Gemini generation error:', error.message);
+      
+      // Handle rate limiting
+      if (error.message && error.message.includes('429')) {
+        throw new Error('Gemini API rate limit exceeded. Free tier allows 20 requests/day. Please wait or upgrade your plan. See RATE_LIMIT_ISSUE.md for solutions.');
+      }
+      
+      // Handle timeout
+      if (error.message.includes('timeout')) {
+        throw new Error('AI request timed out. Please try again.');
+      }
+      
+      throw new Error(`Failed to generate content with Gemini: ${error.message}`);
     }
   }
 

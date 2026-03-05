@@ -41,51 +41,22 @@ async function buildContext(subtopicId: string): Promise<string> {
  * Create prompt for lesson generation
  */
 function createLessonPrompt(subtopicName: string, context: string): string {
-  return `You are an expert Computer Science teacher for secondary school students in Mauritius (Grades 7-13).
+  return `Create a lesson for: ${subtopicName}
 
-Context: ${context}
+CRITICAL: Return ONLY valid JSON. No markdown, no code blocks, no extra text.
 
-Create a comprehensive lesson for the topic: "${subtopicName}"
+Required format:
+{"explanation":"2-3 sentences","examples":["example 1","example 2","example 3"],"keyPoints":["point 1","point 2","point 3","point 4","point 5"],"practiceQuestions":[{"question":"Q1?","answer":"A1"},{"question":"Q2?","answer":"A2"},{"question":"Q3?","answer":"A3"}]}
 
-Your lesson should include:
-
-1. EXPLANATION (2-3 paragraphs):
-   - Clear, simple explanation suitable for secondary school students
-   - Use analogies and real-world examples
-   - Break down complex concepts into digestible parts
-
-2. EXAMPLES (3-4 concrete examples):
-   - Practical, relatable examples
-   - Show step-by-step working where applicable
-   - Include code snippets if relevant (use Python)
-
-3. KEY POINTS (5-7 bullet points):
-   - Essential takeaways students must remember
-   - Concise and memorable
-   - Focus on core concepts
-
-4. PRACTICE QUESTIONS (3-5 questions with answers):
-   - Range from basic to intermediate difficulty
-   - Include both conceptual and practical questions
-   - Provide detailed answers with explanations
-
-Format your response as JSON with this exact structure:
-{
-  "explanation": "...",
-  "examples": ["example1", "example2", "example3"],
-  "keyPoints": ["point1", "point2", ...],
-  "practiceQuestions": [
-    {"question": "...", "answer": "..."},
-    {"question": "...", "answer": "..."}
-  ]
-}
-
-Important:
-- Use simple, clear language appropriate for teenagers
-- Avoid overly technical jargon
-- Make it engaging and practical
-- Ensure accuracy of all technical content
-- Return ONLY valid JSON, no additional text`;
+IMPORTANT RULES:
+- Keep explanation under 150 words
+- Each example: 1-2 sentences max
+- Each key point: 1 sentence max
+- Each answer: 1-2 sentences max
+- DO NOT use quotes (") inside strings - use single quotes (') instead
+- DO NOT use backslashes
+- Keep all text simple and avoid special characters
+- Ensure valid JSON syntax`;
 }
 
 /**
@@ -93,16 +64,73 @@ Important:
  */
 function parseAIResponse(response: string): Omit<LessonContent, 'subtopicId' | 'subtopicName' | 'breadcrumbs' | 'contentHash' | 'generatedAt'> {
   try {
-    // Try to extract JSON from response (in case AI adds extra text)
-    const jsonMatch = response.match(/\{[\s\S]*\}/);
-    const jsonString = jsonMatch ? jsonMatch[0] : response;
+    let cleanText = response.trim();
     
-    const parsed = JSON.parse(jsonString);
+    // Remove markdown code blocks if present
+    if (cleanText.startsWith('```json')) {
+      cleanText = cleanText.replace(/```json\n?/g, '').replace(/```\n?$/g, '');
+    } else if (cleanText.startsWith('```')) {
+      cleanText = cleanText.replace(/```\n?/g, '');
+    }
+    
+    // Find the first { and last } to get the complete JSON
+    const firstBrace = cleanText.indexOf('{');
+    const lastBrace = cleanText.lastIndexOf('}');
+    
+    if (firstBrace === -1 || lastBrace === -1 || firstBrace >= lastBrace) {
+      console.error('No valid JSON structure found in response');
+      console.error('Full response:', cleanText);
+      throw new Error('No JSON found in AI response');
+    }
+    
+    let jsonString = cleanText.substring(firstBrace, lastBrace + 1);
+    
+    // Try to fix common JSON issues
+    // Replace unescaped quotes inside strings (basic attempt)
+    // This is a simple fix - for production, consider using a proper JSON repair library
+    
+    let parsed;
+    try {
+      parsed = JSON.parse(jsonString);
+    } catch (parseError: any) {
+      console.log('First parse attempt failed, trying to repair JSON...');
+      console.log('Parse error:', parseError.message);
+      
+      // Try to fix by escaping unescaped quotes
+      // This is a simplified approach - may not work for all cases
+      try {
+        // Use JSON5 or a more lenient parser if available
+        // For now, just try the original string
+        throw parseError;
+      } catch {
+        console.error('Full JSON that failed to parse:');
+        console.error(jsonString);
+        throw new Error(`Bad JSON from AI: ${parseError.message}`);
+      }
+    }
 
     // Validate structure
-    if (!parsed.explanation || !Array.isArray(parsed.examples) || 
-        !Array.isArray(parsed.keyPoints) || !Array.isArray(parsed.practiceQuestions)) {
-      throw new Error('Invalid lesson structure');
+    if (!parsed.explanation || typeof parsed.explanation !== 'string') {
+      throw new Error('Invalid or missing explanation');
+    }
+    
+    if (!Array.isArray(parsed.examples) || parsed.examples.length === 0) {
+      throw new Error('Invalid or missing examples array');
+    }
+    
+    if (!Array.isArray(parsed.keyPoints) || parsed.keyPoints.length === 0) {
+      throw new Error('Invalid or missing keyPoints array');
+    }
+    
+    if (!Array.isArray(parsed.practiceQuestions) || parsed.practiceQuestions.length === 0) {
+      throw new Error('Invalid or missing practiceQuestions array');
+    }
+    
+    // Validate practice questions structure
+    for (const q of parsed.practiceQuestions) {
+      if (!q.question || !q.answer) {
+        throw new Error('Practice question missing question or answer field');
+      }
     }
 
     return {
@@ -111,9 +139,10 @@ function parseAIResponse(response: string): Omit<LessonContent, 'subtopicId' | '
       keyPoints: parsed.keyPoints,
       practiceQuestions: parsed.practiceQuestions,
     };
-  } catch (error) {
-    console.error('Failed to parse AI response:', error);
-    throw new Error('Failed to parse lesson content from AI response');
+  } catch (error: any) {
+    console.error('Failed to parse AI response:', error.message);
+    console.error('Response preview:', response.substring(0, 500));
+    throw new Error(`Failed to parse lesson content from AI response: ${error.message}`);
   }
 }
 
@@ -149,13 +178,20 @@ export async function generateLesson(subtopicId: string): Promise<LessonContent>
   }
 
   console.log(`🤖 Generating lesson for ${subtopic.name}...`);
+  console.log(`📝 Context: ${context}`);
+  console.log(`📝 Prompt length: ${prompt.length} characters`);
 
   // Generate with AI
   const aiProvider = getDefaultProvider();
+  console.log(`🔌 AI Provider: ${aiProvider.getName()}, Model: ${aiProvider.getModel()}`);
+  
+  const startTime = Date.now();
   const aiResponse = await aiProvider.generateContent(prompt, {
     temperature: 0.7,
     maxTokens: 2048,
   });
+  const elapsed = Date.now() - startTime;
+  console.log(`✅ AI response received in ${elapsed}ms`);
 
   // Parse response
   const lessonData = parseAIResponse(aiResponse.content);

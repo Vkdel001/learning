@@ -13,6 +13,16 @@
     "test:db": "tsx scripts/test-db.ts",
     "test:lesson": "tsx scripts/test-lesson-generation.ts",
     "test:gemini": "tsx scripts/test-gemini-models.ts",
+    "test:ai": "tsx scripts/test-ai-response.ts",
+    "test:network": "tsx scripts/test-network.ts",
+    "test:direct": "tsx scripts/test-direct-api.ts",
+    "test:variations": "tsx scripts/test-prompt-variations.ts",
+    "test:isolated": "tsx scripts/test-isolated-flow.ts",
+    "test:json": "tsx scripts/test-json-issue.ts",
+    "test:flashlite": "tsx scripts/test-flash-lite.ts",
+    "test:quota": "tsx scripts/test-when-quota-resets.ts",
+    "test:newkey": "tsx scripts/test-new-key.ts",
+    "test:findmodel": "tsx scripts/find-working-model.ts",
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
