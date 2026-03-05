@@ -297,17 +297,121 @@
 
 ---
 
+### Task 5.1: Implement CacheManager ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Created cache service with Redis operations
+- ✅ Implemented get<T>(key) with JSON deserialization
+- ✅ Implemented set<T>(key, value, ttl) with JSON serialization
+- ✅ Implemented delete(key) for cache invalidation
+- ✅ Implemented exists(key) for cache checking
+- ✅ Implemented computeHash(data) using SHA-256
+- ✅ Implemented getOrSet pattern for fetch-and-cache
+- ✅ Implemented increment for counters
+- ✅ Created cache key naming conventions
+
+---
+
+### Task 5.2: Implement cache key naming conventions ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Defined CacheKeys object with patterns
+- ✅ lesson:subtopicId:contentHash
+- ✅ quiz:topicId:contentHash
+- ✅ audio:textHash
+- ✅ prompt:templateId:version
+- ✅ progress:userId:nodeId
+
+---
+
+### Task 5.3: Write property test for cache operations ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Test set then get returns same value (20 runs)
+- ✅ Test delete removes key (20 runs)
+- ✅ Test TTL expiration (with 1s delay)
+- ✅ Test hash consistency (50 runs)
+- ✅ Test hash uniqueness (50 runs)
+- ✅ Test getOrSet pattern (20 runs)
+- ✅ Test increment counter
+- ✅ All 7 tests passing
+
+---
+
+### Task 6.1: Create AIProvider interface ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Defined IAIProvider interface
+- ✅ Defined GenerationConfig interface
+- ✅ Defined AIResponse interface
+- ✅ Created provider factory function
+- ✅ Implemented getDefaultProvider singleton
+
+---
+
+### Task 6.2: Implement GeminiProvider ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Installed @google/generative-ai package
+- ✅ Implemented GeminiProvider class
+- ✅ Configured gemini-1.5-flash model
+- ✅ Implemented generateContent method
+- ✅ Added temperature, maxTokens, topP, topK config
+- ✅ Token usage tracking
+
+---
+
+### Task 7.1: Implement LessonGenerator ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Created lesson generator service
+- ✅ Implemented generateLesson(subtopicId)
+- ✅ Built context from curriculum breadcrumbs
+- ✅ Created comprehensive lesson prompt template
+- ✅ Structured output: explanation, examples, key points, practice questions
+- ✅ JSON parsing and validation
+- ✅ Content hash computation for caching
+- ✅ Database persistence (lessons table)
+- ✅ Redis caching (7-day TTL)
+- ✅ API usage logging
+- ✅ Implemented getLesson(subtopicId) for retrieval
+
+---
+
+### Task 7.2: Create lesson generation API routes ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ POST /api/lessons/generate - Generate new lesson
+- ✅ GET /api/lessons/[subtopicId] - Retrieve existing lesson
+- ✅ Protected with requireAuth middleware
+- ✅ Error handling and validation
+
+---
+
 ## 🔄 In Progress
 
-### Task 5.1: Implement CacheManager
+### Task 7.3: Write property tests for lesson generation
 **Status:** Next  
 **Not started yet**
 
 **Next steps:**
-1. Create cache manager service
-2. Implement get/set/delete operations
-3. Implement hash computation
-4. Create cache key conventions
+1. Test lesson structure validation
+2. Test content hash consistency
+3. Test caching behavior
 
 ---
 
@@ -428,7 +532,7 @@
 
 **Last Updated:** March 5, 2026  
 **Current Phase:** Phase 1 - MVP  
-**Progress:** 22/143 tasks complete (15.4%)
+**Progress:** 30/143 tasks complete (21.0%)
 
 ---
 
