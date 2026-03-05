@@ -101,17 +101,103 @@
 
 ---
 
+### Task 3.1: Set up Brevo API integration ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Installed @getbrevo/brevo SDK
+- ✅ Created email service with Brevo API client
+- ✅ Implemented sendOTPEmail function
+- ✅ Created HTML email template for OTP
+- ✅ Configured sender details and email styling
+
+---
+
+### Task 3.2: Implement user registration ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Created UserRegistrationData interface
+- ✅ Implemented registerUser function
+- ✅ Added duplicate email validation
+- ✅ Auto-detect isUnder18 based on grade
+- ✅ Set auth_provider to 'otp'
+- ✅ Created POST /api/auth/register endpoint
+
+---
+
+### Task 3.4: Implement OTP generation and sending ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Created OTP service with generation logic
+- ✅ Implemented 6-digit random OTP generation
+- ✅ Store OTP in Redis with 10-minute TTL
+- ✅ Implemented rate limiting (3 OTPs per hour)
+- ✅ Created sendLoginOTP function
+- ✅ Created POST /api/auth/send-otp endpoint
+
+---
+
+### Task 3.6: Implement OTP verification and session creation ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Implemented verifyOTP function
+- ✅ Check OTP expiration in Redis
+- ✅ Generate secure session token (64-char hex)
+- ✅ Store session in PostgreSQL and Redis
+- ✅ Set 24-hour session TTL
+- ✅ Delete OTP after successful verification
+- ✅ Update user's lastLogin timestamp
+- ✅ Created POST /api/auth/verify-otp endpoint
+
+---
+
+### Task 3.8: Implement session validation middleware ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Created validateSession function
+- ✅ Check Redis first for fast lookup
+- ✅ Fallback to database if not in Redis
+- ✅ Validate session expiration
+- ✅ Fetch user data and attach to request
+- ✅ Created requireAuth middleware
+- ✅ Created requireAdmin middleware
+- ✅ Created GET /api/auth/me endpoint
+
+---
+
+### Task 3.10: Implement logout functionality ✅
+**Status:** Complete  
+**Date:** March 5, 2026
+
+**What was done:**
+- ✅ Implemented logout function
+- ✅ Delete session from Redis
+- ✅ Delete session from PostgreSQL
+- ✅ Clear session cookie
+- ✅ Created POST /api/auth/logout endpoint
+
+---
+
 ## 🔄 In Progress
 
-### Task 2.1: Create authentication service structure
+### Task 3.3: Write property test for user registration
 **Status:** Next  
 **Not started yet**
 
 **Next steps:**
-1. Create auth service directory structure
-2. Set up Brevo email client
-3. Implement OTP generation logic
-4. Create user registration endpoint
+1. Create property test for user registration
+2. Test duplicate email handling
+3. Test grade validation
+4. Test isUnder18 auto-detection
 
 ---
 
@@ -232,7 +318,7 @@
 
 **Last Updated:** March 5, 2026  
 **Current Phase:** Phase 1 - MVP  
-**Progress:** 5/143 tasks complete (3.5%)
+**Progress:** 11/143 tasks complete (7.7%)
 
 ---
 

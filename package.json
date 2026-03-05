@@ -13,6 +13,7 @@
     "test:db": "tsx scripts/test-db.ts"
   },
   "dependencies": {
+    "@getbrevo/brevo": "^4.0.1",
     "@prisma/client": "^6.19.2",
     "ioredis": "^5.10.0",
     "next": "14.2.0",
