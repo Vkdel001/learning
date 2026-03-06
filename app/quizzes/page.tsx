@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { authenticatedFetch } from '@/lib/utils/api-client';
+import Header from '@/components/Header';
+import { QuizSkeleton, CurriculumSkeleton } from '@/components/LoadingSkeleton';
+import { ErrorBoundary, ErrorDisplay } from '@/components/ErrorBoundary';
 
 interface CurriculumNode {
   id: string;
@@ -35,6 +38,7 @@ export default function QuizzesPage() {
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingCurriculum, setLoadingCurriculum] = useState(false);
   const [error, setError] = useState('');
   
   // Quiz taking state
@@ -60,6 +64,7 @@ export default function QuizzesPage() {
   };
 
   const loadChildren = async (nodeId: string) => {
+    setLoadingCurriculum(true);
     try {
       const res = await fetch(`/api/curriculum/${nodeId}/children`);
       const data = await res.json();
@@ -68,6 +73,8 @@ export default function QuizzesPage() {
       }
     } catch (err) {
       console.error('Failed to load children:', err);
+    } finally {
+      setLoadingCurriculum(false);
     }
   };
 
@@ -237,30 +244,11 @@ export default function QuizzesPage() {
   const allAnswered = selectedAnswers.every(a => a !== -1);
 
   return (
+    <ErrorBoundary>
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-indigo-600">
-              AI Tutor 🇲🇺
-            </Link>
-            <nav className="flex gap-4">
-              <Link href="/lessons" className="text-gray-700 hover:text-indigo-600">
-                Lessons
-              </Link>
-              <Link href="/quizzes" className="text-gray-700 hover:text-indigo-600 font-medium">
-                Quizzes
-              </Link>
-              <Link href="/progress" className="text-gray-700 hover:text-indigo-600">
-                Progress
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Breadcrumbs */}
         {breadcrumbs.length > 0 && (
           <div className="mb-6 flex items-center text-sm text-gray-600">
@@ -276,10 +264,10 @@ export default function QuizzesPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-6">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:sticky lg:top-20">
               <h2 className="text-xl font-bold text-gray-900 mb-4">
                 Browse Topics
               </h2>
@@ -310,7 +298,9 @@ export default function QuizzesPage() {
                 </div>
               )}
 
-              {selectedNode && children.length > 0 && (
+              {selectedNode && loadingCurriculum && <CurriculumSkeleton />}
+
+              {selectedNode && !loadingCurriculum && children.length > 0 && (
                 <div className="space-y-2">
                   <h3 className="text-sm font-semibold text-gray-500 uppercase mb-3">
                     {getNodeTypeLabel(selectedNode.nodeType)}
@@ -356,12 +346,10 @@ export default function QuizzesPage() {
 
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-8">
-              {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-                  <p className="text-sm text-red-700">{error}</p>
-                </div>
-              )}
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
+              {error && <ErrorDisplay error={error} onRetry={generateQuiz} />}
+
+              {loading && <QuizSkeleton />}
 
               {!quiz && !error && !loading && (
                 <div className="text-center py-12">
@@ -528,5 +516,6 @@ export default function QuizzesPage() {
         </div>
       </div>
     </div>
+    </ErrorBoundary>
   );
 }

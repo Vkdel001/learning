@@ -2,6 +2,7 @@ import { prisma } from '../prisma';
 import { getDefaultProvider } from './ai-provider.service';
 import { computeHash, CacheKeys, get, set } from './cache.service';
 import { getNodeById, getBreadcrumbs } from './curriculum.service';
+import { jsonrepair } from 'jsonrepair';
 
 /**
  * Quiz Generator Service
@@ -98,22 +99,32 @@ function parseAIResponse(response: string): { questions: QuizQuestion[] } {
     } catch (parseError: any) {
       console.log('❌ Parse error:', parseError.message);
       
-      // Show context around error position
-      if (parseError.message.includes('position')) {
-        const match = parseError.message.match(/position (\d+)/);
-        if (match) {
-          const pos = parseInt(match[1]);
-          const start = Math.max(0, pos - 100);
-          const end = Math.min(jsonString.length, pos + 100);
-          console.log('Context around error:');
-          console.log(jsonString.substring(start, end));
-          console.log(' '.repeat(Math.min(100, pos - start)) + '^');
+      try {
+        // Try to repair the JSON
+        const repairedJson = jsonrepair(jsonString);
+        console.log('🔧 JSON repaired, attempting parse...');
+        parsed = JSON.parse(repairedJson);
+        console.log('✅ Successfully parsed repaired JSON');
+      } catch (repairError: any) {
+        console.error('❌ JSON repair failed');
+        
+        // Show context around error position
+        if (parseError.message.includes('position')) {
+          const match = parseError.message.match(/position (\d+)/);
+          if (match) {
+            const pos = parseInt(match[1]);
+            const start = Math.max(0, pos - 100);
+            const end = Math.min(jsonString.length, pos + 100);
+            console.log('Context around error:');
+            console.log(jsonString.substring(start, end));
+            console.log(' '.repeat(Math.min(100, pos - start)) + '^');
+          }
         }
+        
+        console.error('Full JSON that failed to parse:');
+        console.error(jsonString.substring(0, 500) + '...');
+        throw new Error(`Bad JSON from AI: ${parseError.message}`);
       }
-      
-      console.error('Full JSON that failed to parse:');
-      console.error(jsonString);
-      throw new Error(`Bad JSON from AI: ${parseError.message}`);
     }
 
     // Validate structure

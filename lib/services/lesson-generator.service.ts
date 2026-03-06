@@ -2,6 +2,7 @@ import { prisma } from '../prisma';
 import { getDefaultProvider } from './ai-provider.service';
 import { computeHash, CacheKeys, get, set } from './cache.service';
 import { getNodeById, getBreadcrumbs } from './curriculum.service';
+import { jsonrepair } from 'jsonrepair';
 
 /**
  * Lesson Generator Service
@@ -97,18 +98,21 @@ function parseAIResponse(response: string): Omit<LessonContent, 'subtopicId' | '
     try {
       parsed = JSON.parse(jsonString);
     } catch (parseError: any) {
-      console.log('First parse attempt failed, trying to repair JSON...');
+      console.log('❌ First parse attempt failed, trying to repair JSON...');
       console.log('Parse error:', parseError.message);
       
-      // Try to fix by escaping unescaped quotes
-      // This is a simplified approach - may not work for all cases
       try {
-        // Use JSON5 or a more lenient parser if available
-        // For now, just try the original string
-        throw parseError;
-      } catch {
-        console.error('Full JSON that failed to parse:');
-        console.error(jsonString);
+        // Try to repair the JSON
+        const repairedJson = jsonrepair(jsonString);
+        console.log('🔧 JSON repaired, attempting parse...');
+        parsed = JSON.parse(repairedJson);
+        console.log('✅ Successfully parsed repaired JSON');
+      } catch (repairError: any) {
+        console.error('❌ JSON repair failed');
+        console.error('Original error:', parseError.message);
+        console.error('Repair error:', repairError.message);
+        console.error('Full JSON that failed:');
+        console.error(jsonString.substring(0, 500) + '...');
         throw new Error(`Bad JSON from AI: ${parseError.message}`);
       }
     }

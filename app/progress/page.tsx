@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { authenticatedFetch } from '@/lib/utils/api-client';
 import { getSessionToken } from '@/lib/utils/auth-client';
+import Header from '@/components/Header';
+import { ProgressSkeleton } from '@/components/LoadingSkeleton';
+import { ErrorBoundary, ErrorDisplay } from '@/components/ErrorBoundary';
 
 interface ProgressStats {
   totalLessonsCompleted: number;
@@ -22,6 +25,7 @@ export default function ProgressPage() {
   const router = useRouter();
   const [stats, setStats] = useState<ProgressStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Check if user is logged in
@@ -42,14 +46,17 @@ export default function ProgressPage() {
       
       if (data.success) {
         setStats(data.data);
+        setError('');
       } else if (res.status === 401) {
         console.error('Unauthorized - redirecting to login');
         router.push('/auth/login');
       } else {
         console.error('Failed to load stats:', data.error);
+        setError(data.error || 'Failed to load progress stats');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load stats:', err);
+      setError(err.message || 'Failed to load progress stats');
     } finally {
       setLoading(false);
     }
@@ -75,39 +82,18 @@ export default function ProgressPage() {
   };
 
   return (
+    <ErrorBoundary>
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-indigo-600">
-              AI Tutor 🇲🇺
-            </Link>
-            <nav className="flex gap-4">
-              <Link href="/lessons" className="text-gray-700 hover:text-indigo-600">
-                Lessons
-              </Link>
-              <Link href="/quizzes" className="text-gray-700 hover:text-indigo-600">
-                Quizzes
-              </Link>
-              <Link href="/progress" className="text-gray-700 hover:text-indigo-600 font-medium">
-                Progress
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Progress</h1>
 
-        {loading && (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-          </div>
-        )}
+        {loading && <ProgressSkeleton />}
 
-        {!loading && stats && (
+        {error && <ErrorDisplay error={error} onRetry={loadStats} />}
+
+        {!loading && !error && stats && (
           <div className="space-y-6">
             {/* Debug info */}
             {process.env.NODE_ENV === 'development' && (
@@ -218,5 +204,6 @@ export default function ProgressPage() {
         )}
       </div>
     </div>
+    </ErrorBoundary>
   );
 }

@@ -18,7 +18,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Set up environment variable management
   - _Requirements: 13.1, 19.1_
 
-- [ ] 1.2 Set up PostgreSQL database with Prisma ORM
+- [x] 1.2 Set up PostgreSQL database with Prisma ORM
   - Install Prisma and initialize project
   - Configure Prisma schema with PostgreSQL datasource
   - Set up connection pooling in Prisma
@@ -26,14 +26,14 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Install Prisma Studio for database GUI
   - _Requirements: 13.4, 12.1_
 
-- [ ] 1.3 Set up Redis for caching and session management
+- [x] 1.3 Set up Redis for caching and session management
   - Install and configure ioredis library
   - Create Redis client with connection pooling
   - Configure Redis connection retry logic
   - Set up Redis key naming conventions
   - _Requirements: 7.1, 1.6_
 
-- [ ]* 1.4 Set up property-based testing with fast-check
+- [x]* 1.4 Set up property-based testing with fast-check
   - Install fast-check and Jest
   - Configure Jest for TypeScript
   - Create test utilities and generators
@@ -42,7 +42,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 2. Database Schema and Models
 
-- [ ] 2.1 Create Prisma schema for users and sessions
+- [x] 2.1 Create Prisma schema for users and sessions
   - Define User model without password field
   - Add auth_provider and google_id fields
   - Define Session model
@@ -50,11 +50,11 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Generate Prisma Client
   - _Requirements: 1.1, 1.2, 1.6_
 
-- [ ]* 2.2 Write property test for user registration
+- [x]* 2.2 Write property test for user registration
   - **Property 1: User Registration Creates Account**
   - **Validates: Requirements 1.1**
 
-- [ ] 2.3 Create Prisma schema for curriculum_nodes with materialized paths
+- [x] 2.3 Create Prisma schema for curriculum_nodes with materialized paths
   - Define CurriculumNode model with path field
   - Add self-referential parent-child relationship
   - Add indexes for path, parent_id, and level
@@ -62,11 +62,11 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Run migration
   - _Requirements: 2.1, 9.1_
 
-- [ ]* 2.4 Write property test for tree navigation
+- [x]* 2.4 Write property test for tree navigation
   - **Property 8: Tree Navigation Returns Correct Children**
   - **Validates: Requirements 2.2, 2.3, 2.4, 2.5**
 
-- [ ] 2.5 Create Prisma schema for lessons and prompt_templates
+- [x] 2.5 Create Prisma schema for lessons and prompt_templates
   - Define PromptTemplate model with versioning
   - Define Lesson model with content_hash
   - Add indexes for content_hash and subtopic_id
@@ -80,25 +80,25 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 3. Authentication Service with OTP
 
-- [ ] 3.1 Set up Brevo API integration for email sending
+- [x] 3.1 Set up Brevo API integration for email sending
   - Install Brevo SDK (@getbrevo/brevo or @sendinblue/client)
   - Configure Brevo API key from environment
   - Create email template for OTP
   - Implement sendEmail function
   - _Requirements: 1.2_
 
-- [ ] 3.2 Implement user registration without password
+- [x] 3.2 Implement user registration without password
   - Create UserRegistration interface and validation
   - Create user record in database using Prisma
   - Set auth_provider to 'otp'
   - Handle duplicate email errors
   - _Requirements: 1.1_
 
-- [ ]* 3.3 Write property test for user registration
+- [x]* 3.3 Write property test for user registration
   - **Property 1: User Registration Creates Account**
   - **Validates: Requirements 1.1**
 
-- [ ] 3.4 Implement OTP generation and sending
+- [x] 3.4 Implement OTP generation and sending
   - Generate 6-digit random OTP
   - Store OTP in Redis with 10-minute TTL
   - Send OTP via Brevo email
@@ -106,11 +106,11 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Return OTPResponse with expiry time
   - _Requirements: 1.2, 1.5_
 
-- [ ]* 3.5 Write property test for OTP rate limiting
+- [x]* 3.5 Write property test for OTP rate limiting
   - Test that 4th OTP request within 1 hour is blocked
   - **Validates: Requirements 1.5**
 
-- [ ] 3.6 Implement OTP verification and session creation
+- [x] 3.6 Implement OTP verification and session creation
   - Retrieve OTP from Redis by email
   - Compare submitted OTP with stored OTP
   - Check if OTP has expired
@@ -120,11 +120,11 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Return session object
   - _Requirements: 1.2, 1.3, 1.6_
 
-- [ ]* 3.7 Write property test for OTP expiration
+- [x]* 3.7 Write property test for OTP expiration
   - Test that OTP older than 10 minutes is rejected
   - **Validates: Requirements 1.3**
 
-- [ ] 3.8 Implement session validation middleware
+- [x] 3.8 Implement session validation middleware
   - Extract session token from request headers or cookies
   - Validate token against Redis
   - Check session expiration
@@ -132,26 +132,26 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Attach user object to request
   - _Requirements: 1.6_
 
-- [ ]* 3.9 Write property test for session expiration
+- [x]* 3.9 Write property test for session expiration
   - **Property 6: Session Expiration**
   - **Validates: Requirements 1.6**
 
-- [ ] 3.10 Implement logout functionality
+- [x] 3.10 Implement logout functionality
   - Delete session from Redis
   - Return success response
   - _Requirements: 1.7_
 
-- [ ]* 3.11 Write property test for logout invalidation
+- [x]* 3.11 Write property test for logout invalidation
   - **Property 7: Logout Invalidates Session**
   - **Validates: Requirements 1.7**
 
-- [ ]* 3.12 Write property test for minimal data collection
+- [x]* 3.12 Write property test for minimal data collection
   - **Property 4: Minimal Data Collection for Minors**
   - **Validates: Requirements 1.4, 11.1**
 
 ### 4. Curriculum Navigator
 
-- [ ] 4.1 Implement CurriculumNavigator with Prisma
+- [x] 4.1 Implement CurriculumNavigator with Prisma
   - Create CurriculumNode interface
   - Implement getGrades() using Prisma with path filtering
   - Implement getSubjects(gradeId) with path filtering
@@ -160,33 +160,33 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Implement getSubtopics(topicId) with path filtering
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 4.2 Implement getNodeByPath for direct node retrieval
+- [x] 4.2 Implement getNodeByPath for direct node retrieval
   - Parse materialized path
   - Query database using Prisma findUnique
   - Return node or null
   - _Requirements: 2.1_
 
-- [ ]* 4.3 Write unit tests for curriculum navigation edge cases
+- [x]* 4.3 Write unit tests for curriculum navigation edge cases
   - Test empty curriculum tree
   - Test single-node tree
   - Test deep nesting beyond 5 levels
   - _Requirements: 2.1, 9.5_
 
-- [ ] 4.4 Create curriculum seeding script for Computer Science using Prisma
+- [x] 4.4 Create curriculum seeding script for Computer Science using Prisma
   - Define Grade 7-13 structure
   - Define Computer Science subject hierarchy
   - Implement idempotent seeding logic using upsert
   - Add validation after seeding
   - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
 
-- [ ]* 4.5 Write property test for seeding idempotency
+- [x]* 4.5 Write property test for seeding idempotency
   - **Property 55: Seeding Script Idempotency**
   - **Validates: Requirements 17.4**
 
 
 ### 5. Cache Manager
 
-- [ ] 5.1 Implement CacheManager interface with Redis operations
+- [x] 5.1 Implement CacheManager interface with Redis operations
   - Implement get<T>(key: string) with JSON deserialization
   - Implement set<T>(key, value, ttl) with JSON serialization
   - Implement delete(key) for cache invalidation
@@ -194,13 +194,13 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Implement computeHash(data) using SHA-256
   - _Requirements: 7.1, 7.3_
 
-- [ ] 5.2 Implement cache key naming conventions
+- [x] 5.2 Implement cache key naming conventions
   - Define key patterns for lessons, quizzes, sessions
   - Implement key generation functions
   - Document key structure
   - _Requirements: 7.1_
 
-- [ ]* 5.3 Write property test for cache operations
+- [x]* 5.3 Write property test for cache operations
   - Test set then get returns same value
   - Test TTL expiration
   - Test delete removes key
@@ -208,14 +208,14 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 6. AI Provider Abstraction
 
-- [ ] 6.1 Create AIProvider interface and configuration
+- [x] 6.1 Create AIProvider interface and configuration
   - Define AIProvider interface with generateContent method
   - Define GenerationConfig interface
   - Define ProviderCapabilities interface
   - Create provider factory based on environment config
   - _Requirements: 10.1, 10.2, 10.3_
 
-- [ ] 6.2 Implement GeminiProvider class
+- [x] 6.2 Implement GeminiProvider class
   - Install @google/generative-ai package
   - Implement generateContent using Gemini API
   - Implement getName() and getCapabilities()
@@ -229,14 +229,14 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 7. Content Generator
 
-- [ ] 7.1 Create prompt templates for lesson generation
+- [x] 7.1 Create prompt templates for lesson generation
   - Design lesson generation prompt structure
   - Include grade-level adaptation instructions
   - Include output format specifications
   - Store initial prompt template in database (version 1)
   - _Requirements: 3.1, 3.3, 8.2_
 
-- [ ] 7.2 Implement ContentGenerator.generateLesson()
+- [x] 7.2 Implement ContentGenerator.generateLesson()
   - Create LessonRequest and Lesson interfaces
   - Compute content hash from request parameters
   - Check cache for existing lesson
@@ -254,7 +254,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - **Property 12: Cache Hit Avoids Regeneration**
   - **Validates: Requirements 3.6**
 
-- [ ] 7.5 Implement lesson content parser
+- [x] 7.5 Implement lesson content parser
   - Parse AI response into structured components
   - Extract explanation, examples, key_points, practice_questions
   - Handle markdown formatting
@@ -272,13 +272,13 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 8. Progress Tracker (Basic)
 
-- [ ] 8.1 Create database migration for progress table
+- [x] 8.1 Create database migration for progress table
   - Write migration for progress table
   - Add unique constraint on (user_id, lesson_id)
   - Add indexes for user_id and completed_at
   - _Requirements: 6.1_
 
-- [ ] 8.2 Implement ProgressTracker.recordLessonCompletion()
+- [x] 8.2 Implement ProgressTracker.recordLessonCompletion()
   - Create progress record with user_id, lesson_id, timestamp
   - Handle duplicate completion attempts (idempotent)
   - _Requirements: 6.1_
@@ -287,7 +287,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - **Property 20: Lesson Completion Recording**
   - **Validates: Requirements 6.1**
 
-- [ ] 8.4 Implement ProgressTracker.getProgress() for basic metrics
+- [x] 8.4 Implement ProgressTracker.getProgress() for basic metrics
   - Calculate completion percentage for a curriculum node
   - Count lessons completed vs total lessons
   - _Requirements: 6.3_
@@ -298,14 +298,14 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 9. API Routes - Authentication
 
-- [ ] 9.1 Create POST /api/auth/register endpoint
+- [x] 9.1 Create POST /api/auth/register endpoint
   - Validate request body (name, email, grade)
   - Call AuthenticationService.register()
   - Return user object
   - Handle validation errors
   - _Requirements: 1.1_
 
-- [ ] 9.2 Create POST /api/auth/send-otp endpoint
+- [x] 9.2 Create POST /api/auth/send-otp endpoint
   - Validate email format
   - Check rate limiting (3 per hour)
   - Call AuthenticationService.sendOTP()
@@ -313,7 +313,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Handle rate limit errors
   - _Requirements: 1.2, 1.5_
 
-- [ ] 9.3 Create POST /api/auth/verify-otp endpoint
+- [x] 9.3 Create POST /api/auth/verify-otp endpoint
   - Validate email and OTP format
   - Call AuthenticationService.verifyOTP()
   - Set session cookie (httpOnly, secure, sameSite)
@@ -321,7 +321,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Handle invalid OTP errors
   - _Requirements: 1.2, 1.3, 1.4_
 
-- [ ] 9.4 Create POST /api/auth/logout endpoint
+- [x] 9.4 Create POST /api/auth/logout endpoint
   - Extract session token from cookies
   - Call AuthenticationService.logout()
   - Clear session cookie
@@ -331,18 +331,18 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 10. API Routes - Curriculum and Lessons
 
-- [ ] 10.1 Create GET /api/curriculum/grades endpoint
+- [x] 10.1 Create GET /api/curriculum/grades endpoint
   - Call CurriculumNavigator.getGrades()
   - Return grades array
   - _Requirements: 2.2_
 
-- [ ] 10.2 Create GET /api/curriculum/:nodeId/children endpoint
+- [x] 10.2 Create GET /api/curriculum/:nodeId/children endpoint
   - Extract nodeId from params
   - Determine node type and call appropriate navigator method
   - Return children array
   - _Requirements: 2.3, 2.4, 2.5_
 
-- [ ] 10.3 Create GET /api/lessons/:subtopicId endpoint with authentication
+- [x] 10.3 Create GET /api/lessons/:subtopicId endpoint with authentication
   - Apply session validation middleware
   - Extract subtopicId and grade from request
   - Call ContentGenerator.generateLesson()
@@ -350,14 +350,14 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Handle errors with fallback to cache
   - _Requirements: 3.1, 3.5, 3.6, 12.1_
 
-- [ ] 10.4 Create POST /api/progress/lessons/:lessonId/complete endpoint
+- [x] 10.4 Create POST /api/progress/lessons/:lessonId/complete endpoint
   - Apply session validation middleware
   - Extract lessonId and userId from request
   - Call ProgressTracker.recordLessonCompletion()
   - Return success response
   - _Requirements: 6.1_
 
-- [ ] 10.5 Create GET /api/progress endpoint
+- [x] 10.5 Create GET /api/progress endpoint
   - Apply session validation middleware
   - Extract userId from session
   - Call ProgressTracker.getProgress() for user's subjects
@@ -366,7 +366,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 11. Frontend - Authentication Pages
 
-- [ ] 11.1 Create registration page with form validation
+- [x] 11.1 Create registration page with form validation
   - Build registration form with name, email, grade fields (no password)
   - Implement client-side validation
   - Call POST /api/auth/register
@@ -374,7 +374,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Redirect to OTP verification on success
   - _Requirements: 1.1_
 
-- [ ] 11.2 Create OTP request page
+- [x] 11.2 Create OTP request page
   - Build form with email input
   - Call POST /api/auth/send-otp
   - Display success message with expiry time
@@ -382,7 +382,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Redirect to OTP verification page
   - _Requirements: 1.2, 1.5_
 
-- [ ] 11.3 Create OTP verification page
+- [x] 11.3 Create OTP verification page
   - Build form with 6-digit OTP input
   - Add auto-focus and auto-submit on 6 digits
   - Call POST /api/auth/verify-otp
@@ -392,7 +392,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Add "Resend OTP" button with countdown timer
   - _Requirements: 1.2, 1.3, 1.4_
 
-- [ ] 11.4 Implement logout functionality in navigation
+- [x] 11.4 Implement logout functionality in navigation
   - Add logout button to navigation bar
   - Call POST /api/auth/logout
   - Clear session cookie
@@ -401,7 +401,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 12. Frontend - Curriculum Navigation
 
-- [ ] 12.1 Create curriculum browser component with tree navigation
+- [x] 12.1 Create curriculum browser component with tree navigation
   - Fetch grades from GET /api/curriculum/grades
   - Display grade selection interface
   - Implement expandable tree for subjects, sections, topics, subtopics
@@ -409,7 +409,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Handle loading and error states
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 12.2 Create lesson viewer component
+- [x] 12.2 Create lesson viewer component
   - Fetch lesson from GET /api/lessons/:subtopicId
   - Display explanation with formatting
   - Display examples in structured format
@@ -418,7 +418,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Add "Mark as Complete" button
   - _Requirements: 3.1, 4.1_
 
-- [ ] 12.3 Implement lesson completion tracking in UI
+- [x] 12.3 Implement lesson completion tracking in UI
   - Call POST /api/progress/lessons/:lessonId/complete on button click
   - Update UI to show completion status
   - Display success message
@@ -427,14 +427,14 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 13. Frontend - Progress Dashboard
 
-- [ ] 13.1 Create progress dashboard page
+- [x] 13.1 Create progress dashboard page
   - Fetch progress from GET /api/progress
   - Display completion percentage per subject
   - Display list of completed lessons
   - Show total lessons completed count
   - _Requirements: 6.3_
 
-- [ ] 13.2 Implement responsive design for mobile devices
+- [x] 13.2 Implement responsive design for mobile devices
   - Apply Tailwind responsive classes
   - Test on mobile viewport (320px-768px)
   - Ensure touch targets are at least 44x44px
@@ -443,14 +443,14 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 14. Error Handling and Resilience
 
-- [ ] 14.1 Implement retry logic with exponential backoff for AI provider
+- [x] 14.1 Implement retry logic with exponential backoff for AI provider
   - Add retry wrapper around AI provider calls
   - Implement exponential backoff (1s, 2s, 4s)
   - Maximum 3 retry attempts
   - Log all retry attempts
   - _Requirements: 12.4_
 
-- [ ] 14.2 Implement cache fallback for API failures
+- [x] 14.2 Implement cache fallback for API failures
   - Wrap AI provider calls in try-catch
   - On error, check cache for existing content
   - Return cached content if available
@@ -461,43 +461,442 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - **Property 35: API Failure Falls Back to Cache**
   - **Validates: Requirements 12.1**
 
-- [ ] 14.4 Implement error logging service
+- [x] 14.4 Implement error logging service
   - Create error logger with context capture
   - Log timestamp, error message, stack trace, user context
   - Store logs in database or external service
   - _Requirements: 12.3_
 
 
-### 15. Checkpoint - MVP Core Functionality
+### 15. Interactive AI Tutor Chat System
 
-- [ ] 15.1 Run all tests and verify MVP features
+- [ ] 15.1 Create database migration for chat_conversations and chat_messages tables
+  - Write migration for chat_conversations table (user_id, lesson_id, started_at)
+  - Write migration for chat_messages table (conversation_id, role, content, timestamp)
+  - Add indexes for user_id, lesson_id, conversation_id
+  - _Requirements: Interactive Learning_
+
+- [ ] 15.2 Implement ChatService for conversation management
+  - Create startConversation(userId, lessonId) method
+  - Create addMessage(conversationId, role, content) method
+  - Create getConversationHistory(conversationId) method
+  - Store conversation context in Redis for quick access
+  - _Requirements: Interactive Learning_
+
+- [ ] 15.3 Implement AI chat response generation
+  - Create chat prompt template with lesson context
+  - Include lesson content in system prompt
+  - Implement generateChatResponse(conversationId, userQuestion) method
+  - Maintain conversation history for context
+  - Handle follow-up questions intelligently
+  - _Requirements: Interactive Learning_
+
+- [ ] 15.4 Implement voice input for questions
+  - Integrate Web Speech API for voice recognition
+  - Add microphone button to chat interface
+  - Convert speech to text
+  - Send text to chat service
+  - Handle voice input errors gracefully
+  - _Requirements: Interactive Learning, Accessibility_
+
+- [ ] 15.5 Implement voice output for AI responses
+  - Use existing TTS service for AI responses
+  - Add auto-play option for responses
+  - Add manual play button for each response
+  - Sync with text display
+  - _Requirements: Interactive Learning, Accessibility_
+
+- [ ] 15.6 Create API routes for chat functionality
+  - POST /api/chat/conversations - Start new conversation
+  - POST /api/chat/conversations/:id/messages - Send message
+  - GET /api/chat/conversations/:id - Get conversation history
+  - Apply rate limiting (50 messages per day per user)
+  - _Requirements: Interactive Learning_
+
+- [ ] 15.7 Create chat interface component
+  - Build chat UI with message bubbles
+  - Display user messages on right, AI on left
+  - Add text input with send button
+  - Add microphone button for voice input
+  - Add speaker button for voice output
+  - Show typing indicator while AI responds
+  - Display conversation history
+  - _Requirements: Interactive Learning_
+
+- [ ] 15.8 Integrate chat into lesson viewer
+  - Add "Ask Tutor" button/panel in lesson page
+  - Open chat sidebar or modal
+  - Pass lesson context to chat service
+  - Allow asking questions about specific sections
+  - Highlight relevant lesson sections based on questions
+  - _Requirements: Interactive Learning_
+
+- [ ] 15.9 Implement chat features for deeper understanding
+  - "Explain this in simpler terms" quick action
+  - "Give me an example" quick action
+  - "Why is this important?" quick action
+  - "How does this relate to [topic]?" quick action
+  - Save helpful Q&A pairs for future reference
+  - _Requirements: Interactive Learning_
+
+- [ ] 15.10 Implement conversation analytics
+  - Track most asked questions per lesson
+  - Identify confusing topics based on questions
+  - Use insights to improve lesson content
+  - Display common questions to other students
+  - _Requirements: Interactive Learning, Analytics_
+
+### 16. Checkpoint - MVP Core Functionality
+
+- [ ] 16.1 Run all tests and verify MVP features
   - Ensure all property tests pass
   - Ensure all unit tests pass
   - Test user registration and login flow
   - Test curriculum navigation
   - Test lesson generation and viewing
+  - Test interactive chat functionality
+  - Test voice input and output
   - Test progress tracking
   - Verify error handling works correctly
+  - Ask the user if questions arise
+
+## Phase 1.5: Critical User-Centric Features (MUST HAVE BEFORE LAUNCH)
+
+### 17. Personalized Learning Paths
+
+- [ ] 17.1 Create database migration for user learning profiles
+  - Write migration for learning_profiles table (user_id, subject_id, skill_level, learning_style)
+  - Write migration for topic_mastery table (user_id, topic_id, mastery_level, last_practiced)
+  - Write migration for learning_goals table (user_id, goal_type, target_date, progress)
+  - Add indexes for user_id, subject_id, topic_id
+  - _Requirements: Personalization_
+
+- [ ] 17.2 Implement diagnostic assessment system
+  - Create diagnostic quiz generator (5-10 questions per subject)
+  - Cover key topics across grade level
+  - Adaptive difficulty based on answers
+  - Calculate initial skill level (beginner/intermediate/advanced)
+  - Store results in learning_profiles
+  - _Requirements: Personalization_
+
+- [ ] 17.3 Implement skill level tracking
+  - Track mastery level per topic (0-100%)
+  - Update based on lesson completion
+  - Update based on quiz scores
+  - Decay over time if not practiced
+  - Calculate overall subject proficiency
+  - _Requirements: Personalization_
+
+- [ ] 17.4 Implement personalized recommendations engine
+  - Analyze user's mastery levels
+  - Identify knowledge gaps
+  - Check prerequisites for topics
+  - Recommend "what to learn next"
+  - Suggest review topics
+  - Prioritize based on curriculum sequence
+  - _Requirements: Personalization_
+
+- [ ] 17.5 Implement adaptive content difficulty
+  - Adjust lesson complexity based on skill level
+  - Generate easier/harder versions of content
+  - Modify quiz difficulty dynamically
+  - Provide scaffolding for struggling students
+  - Offer challenges for advanced students
+  - _Requirements: Personalization_
+
+- [ ] 17.6 Create API routes for personalization
+  - POST /api/learning/diagnostic - Start diagnostic assessment
+  - GET /api/learning/recommendations - Get personalized recommendations
+  - GET /api/learning/profile - Get user learning profile
+  - PUT /api/learning/goals - Set learning goals
+  - _Requirements: Personalization_
+
+- [ ] 17.7 Create personalized dashboard UI
+  - Display "Recommended for You" section
+  - Show skill levels per topic (visual progress bars)
+  - Display learning goals and progress
+  - Show "Continue Learning" suggestions
+  - Highlight weak areas needing review
+  - _Requirements: Personalization_
+
+### 18. Offline Mode & Progressive Web App
+
+- [ ] 18.1 Configure Next.js as Progressive Web App
+  - Add service worker configuration
+  - Create manifest.json with app metadata
+  - Configure caching strategies
+  - Add offline fallback page
+  - Test PWA installation
+  - _Requirements: Accessibility, Offline_
+
+- [ ] 18.2 Implement offline content storage
+  - Use IndexedDB for lesson storage
+  - Store downloaded lessons locally
+  - Store quiz data for offline taking
+  - Implement storage quota management
+  - Add "Download for Offline" button
+  - _Requirements: Offline_
+
+- [ ] 18.3 Implement offline sync mechanism
+  - Queue actions when offline (quiz submissions, progress updates)
+  - Detect when connection restored
+  - Sync queued actions to server
+  - Handle sync conflicts
+  - Show sync status to user
+  - _Requirements: Offline_
+
+- [ ] 18.4 Implement low-bandwidth mode
+  - Compress images and assets
+  - Lazy load non-critical content
+  - Reduce API payload sizes
+  - Show data usage estimates
+  - Allow user to toggle low-bandwidth mode
+  - _Requirements: Accessibility_
+
+- [ ] 18.5 Create offline UI indicators
+  - Show offline status banner
+  - Indicate which content is available offline
+  - Show download progress
+  - Display storage usage
+  - Warn before running out of storage
+  - _Requirements: Offline_
+
+### 19. Content Quality Assurance System
+
+- [ ] 19.1 Create database migration for content review
+  - Write migration for content_reviews table (content_id, reviewer_id, status, feedback)
+  - Write migration for content_errors table (content_id, user_id, error_type, description)
+  - Add indexes for content_id, status
+  - _Requirements: Quality, Trust_
+
+- [ ] 19.2 Implement content review workflow
+  - Flag new AI-generated content for review
+  - Create review queue for admins/experts
+  - Implement approval/rejection workflow
+  - Track review history
+  - Version content with reviews
+  - _Requirements: Quality_
+
+- [ ] 19.3 Implement error reporting system
+  - Add "Report Error" button on lessons
+  - Categorize error types (factual, grammar, unclear, etc.)
+  - Allow users to suggest corrections
+  - Track error reports per content
+  - Notify admins of high-error content
+  - _Requirements: Quality_
+
+- [ ] 19.4 Implement automated content validation
+  - Check for required sections
+  - Validate JSON structure
+  - Check content length limits
+  - Detect potentially harmful content
+  - Flag for human review if suspicious
+  - _Requirements: Quality_
+
+- [ ] 19.5 Create content quality dashboard
+  - Show pending reviews
+  - Display error reports
+  - Track content quality metrics
+  - Identify problematic topics
+  - Monitor AI accuracy over time
+  - _Requirements: Quality_
+
+- [ ] 19.6 Create API routes for content QA
+  - POST /api/content/report-error - Report content error
+  - GET /api/content/reviews/pending - Get pending reviews (admin)
+  - PUT /api/content/reviews/:id/approve - Approve content (admin)
+  - PUT /api/content/reviews/:id/reject - Reject content (admin)
+  - _Requirements: Quality_
+
+### 20. Parent Dashboard & Monitoring
+
+- [ ] 20.1 Create database migration for parent accounts
+  - Write migration for parent_accounts table (parent_id, email, name)
+  - Write migration for parent_student_links table (parent_id, student_id, relationship)
+  - Add indexes for parent_id, student_id
+  - _Requirements: Parental Involvement_
+
+- [ ] 20.2 Implement parent account creation
+  - Allow students to invite parents
+  - Send invitation email with secure link
+  - Parent creates account (separate from student)
+  - Link parent to student account
+  - Support multiple children per parent
+  - _Requirements: Parental Involvement_
+
+- [ ] 20.3 Implement parent progress reports
+  - Generate weekly progress summary
+  - Include lessons completed, quiz scores, time spent
+  - Highlight achievements and improvements
+  - Identify struggling areas
+  - Send via email automatically
+  - _Requirements: Parental Involvement_
+
+- [ ] 20.4 Create parent portal UI
+  - Read-only view of student progress
+  - View recent activity timeline
+  - See quiz scores and trends
+  - View time spent learning
+  - See topics mastered vs struggling
+  - Access progress reports
+  - _Requirements: Parental Involvement_
+
+- [ ] 20.5 Implement parent alerts
+  - Alert when student inactive for 3+ days
+  - Alert when quiz scores drop
+  - Alert when student struggling with topic
+  - Celebrate achievements (streak milestones, perfect scores)
+  - Configurable alert preferences
+  - _Requirements: Parental Involvement_
+
+- [ ] 20.6 Create API routes for parent features
+  - POST /api/parents/invite - Invite parent
+  - GET /api/parents/students/:id/progress - Get student progress
+  - GET /api/parents/students/:id/activity - Get recent activity
+  - PUT /api/parents/alerts/preferences - Update alert settings
+  - _Requirements: Parental Involvement_
+
+### 21. Homework Helper System
+
+- [ ] 21.1 Implement image upload for homework questions
+  - Add image upload component
+  - Support camera capture on mobile
+  - Compress images before upload
+  - Store in cloud storage (Backblaze B2)
+  - Generate thumbnails
+  - _Requirements: Homework Help_
+
+- [ ] 21.2 Integrate OCR for text extraction
+  - Use Tesseract.js or cloud OCR service
+  - Extract text from homework images
+  - Handle handwritten text (if possible)
+  - Extract mathematical equations
+  - Allow user to edit extracted text
+  - _Requirements: Homework Help_
+
+- [ ] 21.3 Implement step-by-step solution generation
+  - Analyze homework question
+  - Generate step-by-step solution
+  - Explain reasoning for each step
+  - Show worked examples
+  - Provide similar practice problems
+  - _Requirements: Homework Help_
+
+- [ ] 21.4 Create homework history tracking
+  - Store homework questions and solutions
+  - Track homework completion
+  - Allow reviewing past homework
+  - Identify common homework topics
+  - _Requirements: Homework Help_
+
+- [ ] 21.5 Implement homework rate limiting
+  - Limit to 10 homework questions per day
+  - Show remaining questions
+  - Reset at midnight
+  - Premium users get more (future)
+  - _Requirements: Homework Help_
+
+- [ ] 21.6 Create API routes for homework help
+  - POST /api/homework/upload - Upload homework image
+  - POST /api/homework/solve - Get solution
+  - GET /api/homework/history - Get past homework
+  - _Requirements: Homework Help_
+
+- [ ] 21.7 Create homework helper UI
+  - "Homework Help" section in navigation
+  - Upload/camera interface
+  - OCR preview and editing
+  - Solution display with steps
+  - Similar problems section
+  - Homework history view
+  - _Requirements: Homework Help_
+
+### 22. Exam Preparation Mode
+
+- [ ] 22.1 Create database migration for exam data
+  - Write migration for exams table (name, date, subject_id, exam_board)
+  - Write migration for exam_topics table (exam_id, topic_id, weight)
+  - Write migration for mock_exams table (user_id, exam_id, score, time_taken)
+  - Add indexes for exam_id, user_id
+  - _Requirements: Exam Prep_
+
+- [ ] 22.2 Implement exam schedule management
+  - Allow students to add upcoming exams
+  - Set exam date and subject
+  - Calculate days until exam
+  - Show countdown on dashboard
+  - Send reminders as exam approaches
+  - _Requirements: Exam Prep_
+
+- [ ] 22.3 Implement exam-focused content generation
+  - Generate exam-style questions
+  - Focus on high-weight topics
+  - Include past exam patterns
+  - Provide marking schemes
+  - Generate exam tips
+  - _Requirements: Exam Prep_
+
+- [ ] 22.4 Implement timed mock exams
+  - Create full-length practice exams
+  - Enforce time limits
+  - Simulate exam conditions
+  - Auto-submit when time expires
+  - Provide detailed results
+  - _Requirements: Exam Prep_
+
+- [ ] 22.5 Implement exam revision planner
+  - Generate revision schedule
+  - Prioritize weak topics
+  - Allocate time based on topic weight
+  - Track revision progress
+  - Adjust plan based on performance
+  - _Requirements: Exam Prep_
+
+- [ ] 22.6 Create exam prep dashboard
+  - Show upcoming exams
+  - Display revision progress
+  - Show mock exam scores
+  - Highlight weak areas
+  - Provide exam strategies
+  - _Requirements: Exam Prep_
+
+- [ ] 22.7 Create API routes for exam prep
+  - POST /api/exams - Add upcoming exam
+  - GET /api/exams/:id/revision-plan - Get revision plan
+  - POST /api/exams/:id/mock - Start mock exam
+  - GET /api/exams/:id/analytics - Get exam analytics
+  - _Requirements: Exam Prep_
+
+### 23. Checkpoint - Phase 1.5 Complete
+
+- [ ] 23.1 Verify all Phase 1.5 features
+  - Test personalized recommendations
+  - Test offline mode and PWA
+  - Test content quality reporting
+  - Test parent dashboard
+  - Test homework helper
+  - Test exam prep mode
+  - Verify all features work together
   - Ask the user if questions arise
 
 ## Phase 2: Enhancement - Quizzes, Voice, and Analytics
 
 ### 16. Quiz Generation and Evaluation
 
-- [ ] 16.1 Create database migration for quizzes and quiz_attempts tables
+- [x] 16.1 Create database migration for quizzes and quiz_attempts tables
   - Write migration for quizzes table with content_hash
   - Write migration for quiz_attempts table
   - Add indexes for topic_id, user_id, quiz_id
   - _Requirements: 4.2, 4.5_
 
-- [ ] 16.2 Create prompt templates for quiz generation
+- [x] 16.2 Create prompt templates for quiz generation
   - Design quiz generation prompt structure
   - Include multiple-choice format specifications
   - Include difficulty level instructions
   - Store initial quiz prompt template (version 1)
   - _Requirements: 4.2_
 
-- [ ] 16.3 Implement ContentGenerator.generateQuiz()
+- [x] 16.3 Implement ContentGenerator.generateQuiz()
   - Create QuizRequest and Quiz interfaces
   - Compute content hash from request parameters
   - Check cache for existing quiz
@@ -512,7 +911,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - **Validates: Requirements 4.2**
 
 
-- [ ] 16.5 Implement quiz evaluation logic
+- [x] 16.5 Implement quiz evaluation logic
   - Create QuizAttempt and Answer interfaces
   - Compare submitted answers with correct answers
   - Calculate score as percentage
@@ -528,7 +927,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - **Property 16: Answer Feedback Completeness**
   - **Validates: Requirements 4.4, 16.2, 16.3**
 
-- [ ] 16.6 Implement ProgressTracker.recordQuizAttempt()
+- [x] 16.6 Implement ProgressTracker.recordQuizAttempt()
   - Store quiz attempt in database
   - Record score, answers, time_spent, timestamp
   - _Requirements: 4.5, 6.2_
@@ -549,14 +948,14 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 17. Voice Narration System
 
-- [ ] 17.1 Create database migration for audio_segments table
+- [x] 17.1 Create database migration for audio_segments table
   - Write migration with text_hash, audio_url, duration fields
   - Add index for text_hash
   - Add usage_count tracking field
   - _Requirements: 5.3, 5.6_
 
 
-- [ ] 17.2 Implement text segmentation for audio generation
+- [x] 17.2 Implement text segmentation for audio generation
   - Split lesson text into logical segments (100-300 words)
   - Segment by paragraphs and natural breaks
   - Compute hash for each segment
@@ -573,7 +972,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Set cache headers for 30-day CDN caching
   - _Requirements: 5.4, 15.4, 15.5_
 
-- [ ] 17.5 Implement VoiceSynthesizer with ElevenLabs integration
+- [x] 17.5 Implement VoiceSynthesizer with ElevenLabs integration
   - Install ElevenLabs SDK
   - Create VoiceSynthesizer interface
   - Implement synthesizeText() method
@@ -582,6 +981,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Store metadata in database
   - Return audio URL
   - _Requirements: 5.2, 5.6, 15.2, 15.3_
+  - NOTE: Currently using browser Speech Synthesis API as fallback
 
 - [ ]* 17.6 Write property test for audio deduplication
   - **Property 19: Audio Deduplication**
@@ -591,19 +991,20 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - **Property 47: Audio Hash Consistency**
   - **Validates: Requirements 15.2**
 
-- [ ] 17.8 Implement VoiceSynthesizer.synthesizeLesson()
+- [x] 17.8 Implement VoiceSynthesizer.synthesizeLesson()
   - Segment lesson text
   - Generate audio for each segment
   - Track usage count for reused segments
   - Return array of AudioSegment objects
   - _Requirements: 5.1, 5.3, 15.6_
+  - NOTE: Currently using browser Speech Synthesis API
 
 
 - [ ]* 17.9 Write property test for audio segment usage tracking
   - **Property 48: Audio Segment Usage Tracking**
   - **Validates: Requirements 15.6**
 
-- [ ] 17.10 Implement TTS failure graceful degradation
+- [x] 17.10 Implement TTS failure graceful degradation
   - Wrap TTS calls in try-catch
   - Log errors but don't block lesson display
   - Return lesson without audio on TTS failure
@@ -659,7 +1060,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 19. Enhanced Progress Tracking and Analytics
 
-- [ ] 19.1 Implement ProgressTracker.getAnalytics() for comprehensive metrics
+- [x] 19.1 Implement ProgressTracker.getAnalytics() for comprehensive metrics
   - Calculate total lessons completed
   - Calculate total quizzes taken
   - Calculate overall average score
@@ -685,7 +1086,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 20. API Routes - Quizzes and Audio
 
-- [ ] 20.1 Create GET /api/quizzes/:topicId endpoint
+- [x] 20.1 Create GET /api/quizzes/:topicId endpoint
   - Apply session validation middleware
   - Apply rate limiting middleware
   - Extract topicId and grade from request
@@ -693,7 +1094,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Return quiz object
   - _Requirements: 4.2_
 
-- [ ] 20.2 Create POST /api/quizzes/:quizId/submit endpoint
+- [x] 20.2 Create POST /api/quizzes/:quizId/submit endpoint
   - Apply session validation middleware
   - Extract quizId, answers, timeSpent from request
   - Evaluate quiz and calculate score
@@ -702,15 +1103,16 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Return evaluation results
   - _Requirements: 4.3, 4.4, 4.5_
 
-- [ ] 20.3 Create GET /api/lessons/:lessonId/audio endpoint
+- [x] 20.3 Create GET /api/lessons/:lessonId/audio endpoint
   - Apply session validation middleware
   - Fetch lesson from database
   - Call VoiceSynthesizer.synthesizeLesson()
   - Return array of audio segment URLs
   - Handle TTS failures gracefully
   - _Requirements: 5.1, 5.7_
+  - NOTE: Currently using browser Speech Synthesis API
 
-- [ ] 20.4 Create GET /api/progress/analytics endpoint
+- [x] 20.4 Create GET /api/progress/analytics endpoint
   - Apply session validation middleware
   - Extract userId from session
   - Call ProgressTracker.getAnalytics()
@@ -719,7 +1121,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 21. Frontend - Quiz Interface
 
-- [ ] 21.1 Create quiz component with question display
+- [x] 21.1 Create quiz component with question display
   - Fetch quiz from GET /api/quizzes/:topicId
   - Display questions one at a time or all at once
   - Implement multiple-choice selection
@@ -728,7 +1130,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - _Requirements: 4.2_
 
 
-- [ ] 21.2 Create quiz results component with feedback
+- [x] 21.2 Create quiz results component with feedback
   - Call POST /api/quizzes/:quizId/submit
   - Display score prominently
   - Show correct/incorrect indicators for each question
@@ -738,7 +1140,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Add "Review Topic" and "Try Again" buttons
   - _Requirements: 4.3, 4.4, 16.1, 16.2, 16.3, 16.4, 16.5, 16.7_
 
-- [ ] 21.3 Implement quiz history view
+- [x] 21.3 Implement quiz history view
   - Fetch past quiz attempts from progress API
   - Display list of completed quizzes with scores
   - Allow viewing full results for any past quiz
@@ -750,7 +1152,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 22. Frontend - Audio Player
 
-- [ ] 22.1 Create audio player component with controls
+- [x] 22.1 Create audio player component with controls
   - Fetch audio segments from GET /api/lessons/:lessonId/audio
   - Implement play/pause controls
   - Implement speed adjustment (0.75x, 1x, 1.25x, 1.5x)
@@ -758,8 +1160,9 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
   - Handle audio generation failures gracefully
   - Implement lazy loading (don't fetch until user clicks play)
   - _Requirements: 5.1, 5.7, 13.5_
+  - NOTE: Currently using browser Speech Synthesis API
 
-- [ ] 22.2 Integrate audio player into lesson viewer
+- [x] 22.2 Integrate audio player into lesson viewer
   - Add audio player above lesson content
   - Sync audio playback with text highlighting (optional enhancement)
   - Show audio generation progress
@@ -767,7 +1170,7 @@ The system uses TypeScript with Next.js for the full-stack application, PostgreS
 
 ### 23. Frontend - Enhanced Analytics Dashboard
 
-- [ ] 23.1 Enhance progress dashboard with comprehensive analytics
+- [x] 23.1 Enhance progress dashboard with comprehensive analytics
   - Fetch analytics from GET /api/progress/analytics
   - Display learning streak prominently
   - Display average quiz scores per subject

@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { authenticatedFetch } from '@/lib/utils/api-client';
 import AudioPlayer from '@/components/AudioPlayer';
+import Header from '@/components/Header';
+import { LessonSkeleton, CurriculumSkeleton } from '@/components/LoadingSkeleton';
+import { ErrorBoundary, ErrorDisplay } from '@/components/ErrorBoundary';
+import ChatInterface from '@/components/ChatInterface';
 
 interface CurriculumNode {
   id: string;
@@ -32,8 +36,10 @@ export default function LessonsPage() {
   const [breadcrumbs, setBreadcrumbs] = useState<CurriculumNode[]>([]);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingCurriculum, setLoadingCurriculum] = useState(false);
   const [error, setError] = useState('');
   const [markingComplete, setMarkingComplete] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   useEffect(() => {
     loadGrades();
@@ -52,6 +58,7 @@ export default function LessonsPage() {
   };
 
   const loadChildren = async (nodeId: string) => {
+    setLoadingCurriculum(true);
     try {
       const res = await fetch(`/api/curriculum/${nodeId}/children`);
       const data = await res.json();
@@ -60,6 +67,8 @@ export default function LessonsPage() {
       }
     } catch (err) {
       console.error('Failed to load children:', err);
+    } finally {
+      setLoadingCurriculum(false);
     }
   };
 
@@ -168,33 +177,11 @@ export default function LessonsPage() {
   };
 
   return (
+    <ErrorBoundary>
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-indigo-600">
-              AI Tutor 🇲🇺
-            </Link>
-            <nav className="flex gap-4">
-              <Link href="/lessons" className="text-gray-700 hover:text-indigo-600 font-medium">
-                Lessons
-              </Link>
-              <Link href="/quizzes" className="text-gray-700 hover:text-indigo-600">
-                Quizzes
-              </Link>
-              <Link href="/progress" className="text-gray-700 hover:text-indigo-600">
-                Progress
-              </Link>
-              <Link href="/test" className="text-gray-500 hover:text-gray-700">
-                Test
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Breadcrumbs */}
         {breadcrumbs.length > 0 && (
           <div className="mb-6 flex items-center text-sm text-gray-600">
@@ -210,10 +197,10 @@ export default function LessonsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Sidebar - Curriculum Browser */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-6">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:sticky lg:top-20">
               <h2 className="text-xl font-bold text-gray-900 mb-4">
                 Browse Curriculum
               </h2>
@@ -247,7 +234,9 @@ export default function LessonsPage() {
               )}
 
               {/* Children List */}
-              {selectedNode && children.length > 0 && (
+              {selectedNode && loadingCurriculum && <CurriculumSkeleton />}
+              
+              {selectedNode && !loadingCurriculum && children.length > 0 && (
                 <div className="space-y-2">
                   <h3 className="text-sm font-semibold text-gray-500 uppercase mb-3">
                     {getNodeTypeLabel(selectedNode.nodeType)}
@@ -294,22 +283,12 @@ export default function LessonsPage() {
 
           {/* Main Content - Lesson Display */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-8">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8">
               {/* Error Message */}
-              {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm text-red-700">{error}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {error && <ErrorDisplay error={error} onRetry={generateLesson} />}
+
+              {/* Loading State */}
+              {loading && <LessonSkeleton />}
 
               {/* Empty State */}
               {!lesson && !error && !loading && (
@@ -327,14 +306,25 @@ export default function LessonsPage() {
               {/* Lesson Content */}
               {lesson && (
                 <div className="space-y-8">
-                  {/* Title */}
+                  {/* Title with Chat Button */}
                   <div className="border-b border-gray-200 pb-4">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                      {lesson.subtopicName}
-                    </h1>
-                    <p className="text-sm text-gray-500">
-                      {lesson.breadcrumbs.join(' › ')}
-                    </p>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                          {lesson.subtopicName}
+                        </h1>
+                        <p className="text-sm text-gray-500">
+                          {lesson.breadcrumbs.join(' › ')}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setShowChat(!showChat)}
+                        className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center space-x-2"
+                      >
+                        <span className="text-xl">🤖</span>
+                        <span>{showChat ? 'Hide' : 'Ask'} Tutor</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Listen to Full Lesson */}
@@ -447,9 +437,21 @@ export default function LessonsPage() {
                 </div>
               )}
             </div>
+
+            {/* Chat Interface */}
+            {lesson && showChat && (
+              <div className="mt-6 h-[600px]">
+                <ChatInterface
+                  lessonId={lesson.lessonId || ''}
+                  lessonTitle={lesson.subtopicName}
+                  onClose={() => setShowChat(false)}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
+    </ErrorBoundary>
   );
 }

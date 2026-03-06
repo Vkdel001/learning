@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send OTP for email verification
-    const otpResult = await generateAndSendOTP(email);
+    const otpResult = await generateAndSendOTP(email, name);
     
     if (!otpResult.success) {
       return NextResponse.json(
